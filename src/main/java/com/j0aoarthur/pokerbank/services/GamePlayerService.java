@@ -2,7 +2,6 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerBalanceDTO;
 import com.j0aoarthur.pokerbank.entities.*;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
@@ -106,10 +105,6 @@ public class GamePlayerService {
         return gamePlayerRepository.findByGameId(gameId);
     }
 
-    public List<GamePlayer> getAllGamePlayers() {
-        return gamePlayerRepository.findAll();
-    }
-
 
     public GameInfoDTO getGameInfo(Long id) {
         Game game = gameService.getGameById(id);
@@ -135,7 +130,7 @@ public class GamePlayerService {
             observation = "O saldo do jogo não está correto";
         }
 
-        GameInfoDTO gameInfoDTO = new GameInfoDTO(
+        return new GameInfoDTO(
                 game.getId(),
                 game.getDate(),
                 totalBalance,
@@ -144,8 +139,6 @@ public class GamePlayerService {
                 game.getIsFinished(),
                 observation
         );
-
-        return gameInfoDTO;
 
 
     }

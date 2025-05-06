@@ -29,7 +29,6 @@ public class GamePlayer {
     @JoinColumn(name = "player_id")
     private Player player;
 
-    @Column(name = "initial_cash")
     private BigDecimal initialCash;
 
     private BigDecimal balance;
@@ -39,7 +38,6 @@ public class GamePlayer {
     @Enumerated(EnumType.STRING)
     private PaymentSituation paymentSituation;
 
-    @Column(name = "due_date")
     private LocalDate dueDate;
 
     @Column(name = "created_at", nullable = false, updatable = false)

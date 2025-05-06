@@ -1,6 +1,5 @@
 package com.j0aoarthur.pokerbank.repositories;
 
-import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.entities.ChipCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 

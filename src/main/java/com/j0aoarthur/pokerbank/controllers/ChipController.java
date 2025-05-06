@@ -5,7 +5,6 @@ import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.services.ChipService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,7 @@ public class ChipController {
     }
 
     @GetMapping
-    public ResponseEntity getAllChips() {
+    public ResponseEntity<List<Chip>> getAllChips() {
         List<Chip> chipList = chipService.getAllChips();
         return ResponseEntity.ok(chipList);
     }

@@ -4,7 +4,6 @@ import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.PlayerRequestDTO;
-import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.Player;
 import com.j0aoarthur.pokerbank.services.ChipService;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component

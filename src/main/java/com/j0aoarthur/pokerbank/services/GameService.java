@@ -4,7 +4,6 @@ import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

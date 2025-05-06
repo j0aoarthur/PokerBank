@@ -22,16 +22,12 @@ public class PlayerRanking {
     @JoinColumn(name = "player_id")
     private Player player;
 
-    @Column(name = "total_won")
     private BigDecimal totalWon = BigDecimal.ZERO;
 
-    @Column(name = "total_lost")
     private BigDecimal totalLost = BigDecimal.ZERO;
 
-    @Column(name = "net_balance")
     private BigDecimal netBalance = BigDecimal.ZERO;
 
-    @Column(name = "games_played")
     private Integer gamesPlayed = 0;
 }
 

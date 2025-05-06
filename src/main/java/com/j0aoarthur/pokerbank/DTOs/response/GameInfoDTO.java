@@ -1,7 +1,5 @@
 package com.j0aoarthur.pokerbank.DTOs.response;
 
-import com.j0aoarthur.pokerbank.entities.Game;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

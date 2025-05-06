@@ -1,18 +1,14 @@
 package com.j0aoarthur.pokerbank.services;
 
-import com.j0aoarthur.pokerbank.DTOs.response.PlayerRankingDTO;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
-import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.repositories.GamePlayerRepository;
 import com.j0aoarthur.pokerbank.repositories.PlayerRankingRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class PlayerRankingService {
@@ -62,12 +58,5 @@ public class PlayerRankingService {
                 .sorted(Comparator.comparing(PlayerRanking::getNetBalance).reversed())
                 .limit(limit)
                 .toList();
-    }
-
-    public PlayerRankingDTO getPlayerRankingById(Long playerId) {
-        PlayerRanking playerRanking = playerRankingRepository.findById(playerId)
-                .orElseThrow(() -> new EntityNotFoundException("Jogador não foi encontrado com o ID: " + playerId));
-
-        return new PlayerRankingDTO(playerRanking);
     }
 }

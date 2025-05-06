@@ -4,7 +4,6 @@ import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,19 +29,5 @@ public class ChipService {
     public Chip getChipById(Long id) {
         return chipRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ficha não encontrada com ID: " + id));
-    }
-
-
-    public Chip updateChip(Long id, ChipRequestDTO dto) {
-        Chip chip = getChipById(id);
-        chip.setColor(dto.color());
-        chip.setValue(dto.value());
-        return chipRepository.save(chip);
-    }
-
-
-    public void deleteChip(Long id) {
-        Chip chip = getChipById(id);
-        chipRepository.delete(chip);
     }
 }
