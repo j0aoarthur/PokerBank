@@ -12,7 +12,6 @@ import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
 import com.j0aoarthur.pokerbank.services.GamePlayerService;
 import com.j0aoarthur.pokerbank.services.GameService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +64,7 @@ public class GameController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getGameInfo(@PathVariable Long id) {
+    public ResponseEntity<GameInfoDTO> getGameInfo(@PathVariable Long id) {
         GameInfoDTO gameInfo = gamePlayerService.getGameInfo(id);
         return ResponseEntity.ok(gameInfo);
     }

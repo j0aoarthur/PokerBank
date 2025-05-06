@@ -3,10 +3,11 @@ package com.j0aoarthur.pokerbank.controllers;
 import com.j0aoarthur.pokerbank.DTOs.request.PlayerRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Player;
 import com.j0aoarthur.pokerbank.services.PlayerService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/players")
@@ -23,12 +24,12 @@ public class PlayerController {
     }
 
     @GetMapping
-    public ResponseEntity getAllPlayers() {
+    public ResponseEntity<List<Player>> getAllPlayers() {
         return ResponseEntity.ok(playerService.getAllPlayers());
     }
 
     @GetMapping("/not-in-game/{gameId}")
-    public ResponseEntity getPlayersNotInGame(@PathVariable Long gameId) {
+    public ResponseEntity<List<Player>> getPlayersNotInGame(@PathVariable Long gameId) {
         return ResponseEntity.ok(playerService.getPlayersNotInGame(gameId));
     }
 }

@@ -18,14 +18,14 @@ public class PlayerRankingController {
     private PlayerRankingService playerRankingService;
 
     @GetMapping
-    public ResponseEntity getRanking() {
+    public ResponseEntity<List<PlayerRankingDTO>> getRanking() {
         List<PlayerRanking> ranking = playerRankingService.getPlayerRankings();
 
         return ResponseEntity.ok(ranking.stream().map(PlayerRankingDTO::new).toList());
     }
 
     @GetMapping("/top")
-    public ResponseEntity getTopPlayers(@RequestParam(defaultValue = "4") int limit) {
+    public ResponseEntity<List<PlayerRankingDTO>> getTopPlayers(@RequestParam(defaultValue = "4") int limit) {
         List<PlayerRanking> topPlayers = playerRankingService.getTopPlayers(limit);
         return ResponseEntity.ok(topPlayers.stream().map(PlayerRankingDTO::new).toList());
     }
