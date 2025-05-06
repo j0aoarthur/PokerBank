@@ -177,12 +177,4 @@ A aplicação possui um carregador automático de dados (`DataLoader`) para test
     * Jogadores com nomes pré-definidos
     * Um jogo com jogadores, fichas e saldos atribuídos
 
----
 
-## 📂 Repositório
-
-🔗 [GitHub - j0aoarthur/pokerbank](https://github.com/j0aoarthur/pokerbank)
-
----
-
-Se quiser, posso criar uma versão desse README no formato Markdown com formatação avançada pronta para copiar e colar no seu repositório. Deseja isso?
