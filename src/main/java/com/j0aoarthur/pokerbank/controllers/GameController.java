@@ -5,6 +5,7 @@ import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerBalanceDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerDTO;
+import com.j0aoarthur.pokerbank.DTOs.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
@@ -44,6 +45,12 @@ public class GameController {
         return ResponseEntity.ok(games);
     }
 
+    @GetMapping("/{gameId}")
+    public ResponseEntity<GameInfoDTO> getGameInfo(@PathVariable Long gameId) {
+        GameInfoDTO gameInfo = gameService.getGameInfo(gameId);
+        return ResponseEntity.ok(gameInfo);
+    }
+
     @GetMapping("/latest")
     public ResponseEntity<List<Game>> getLatestGames() {
         List<Game> latestGames = gameService.getLatestGames();
@@ -57,16 +64,16 @@ public class GameController {
         return ResponseEntity.ok(gamePlayer);
     }
 
-    @GetMapping("/{id}/players")
-    public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersWithBalance(@PathVariable Long id) {
-        List<GamePlayer> balances = gamePlayerService.getGamePlayersWithBalance(id);
+    @GetMapping("/{gameId}/players")
+    public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersWithBalance(@PathVariable Long gameId) {
+        List<GamePlayer> balances = gamePlayerService.getGamePlayersWithBalance(gameId);
         return ResponseEntity.ok(balances.stream().map(GamePlayerBalanceDTO::new).toList());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GameInfoDTO> getGameInfo(@PathVariable Long id) {
-        GameInfoDTO gameInfo = gamePlayerService.getGameInfo(id);
-        return ResponseEntity.ok(gameInfo);
+    @GetMapping("/{gameId}/payment-suggestion")
+    public ResponseEntity<List<PaymentSuggestionDTO>> getPaymentSuggestion(@PathVariable Long gameId) {
+        List<PaymentSuggestionDTO> paymentSuggestion = gameService.getPaymentSuggestion(gameId);
+        return ResponseEntity.ok(paymentSuggestion);
     }
 
     @GetMapping("/{gameId}/players/{playerId}")

@@ -1,6 +1,7 @@
 package com.j0aoarthur.pokerbank.repositories;
 
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
+import com.j0aoarthur.pokerbank.entities.PaymentSituation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long> {
     Optional<GamePlayer> findByGameIdAndPlayerId(Long gameId, Long playerId);
 
     Boolean existsByGameIdAndPlayerId(Long gameId, Long playerId);
+
+    List<GamePlayer> findByGameIdAndPaymentSituationOrderByBalance(Long gameId, PaymentSituation paymentSituation);
 
 
 }

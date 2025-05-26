@@ -1,7 +1,6 @@
 package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
 import com.j0aoarthur.pokerbank.entities.*;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
@@ -105,42 +104,8 @@ public class GamePlayerService {
         return gamePlayerRepository.findByGameId(gameId);
     }
 
-
-    public GameInfoDTO getGameInfo(Long id) {
-        Game game = gameService.getGameById(id);
-
-        List<GamePlayer> gamePlayersWithBalance = this.getGamePlayersWithBalance(id);
-
-        Integer totalPlayers = gamePlayersWithBalance.size();
-
-        BigDecimal totalBalance = BigDecimal.ZERO;
-        for (GamePlayer gamePlayer : gamePlayersWithBalance) {
-            totalBalance = totalBalance.add(gamePlayer.getBalance());
-        }
-        String observation;
-
-        BigDecimal totalPrize = BigDecimal.ZERO;
-        for (GamePlayer gamePlayer : gamePlayersWithBalance) {
-            totalPrize = totalPrize.add(gamePlayer.getInitialCash());
-        }
-
-        if (totalBalance.compareTo(BigDecimal.ZERO) == 0) {
-            observation = "O saldo do jogo está correto.";
-        } else {
-            observation = "O saldo do jogo não está correto";
-        }
-
-        return new GameInfoDTO(
-                game.getId(),
-                game.getDate(),
-                totalBalance,
-                totalPrize,
-                totalPlayers,
-                game.getIsFinished(),
-                observation
-        );
-
-
+    public List<GamePlayer> getGamePlayersWithBalanceAndPaymentSituation(Long gameId, PaymentSituation paymentSituation) {
+        return gamePlayerRepository.findByGameIdAndPaymentSituationOrderByBalance(gameId, paymentSituation);
     }
 }
 
