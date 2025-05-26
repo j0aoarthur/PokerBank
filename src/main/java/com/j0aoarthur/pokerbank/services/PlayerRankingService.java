@@ -22,29 +22,32 @@ public class PlayerRankingService {
     public void updatePlayerRanking(Long playerId) {
         List<GamePlayer> gamePlayers = gamePlayerService.getGamesByPlayer(playerId);
 
-        String name = gamePlayers.get(0).getPlayer().getName();
         int gamesPlayed = gamePlayers.size();
-
-        List<GamePlayer> games = gamePlayers.stream()
-                .filter(g -> g.getPlayer().getName().equals(name))
-                .toList();
 
         PlayerRanking playerRanking = playerRankingRepository.findById(playerId).orElseGet(PlayerRanking::new);
 
-        games.stream().map(GamePlayer::getBalance).forEach(balance -> {
-            if (balance.compareTo(BigDecimal.ZERO) > 0) {
-                playerRanking.setTotalWon(playerRanking.getTotalWon().add(balance));
-            } else if (balance.compareTo(BigDecimal.ZERO) < 0) {
-                playerRanking.setTotalLost(playerRanking.getTotalLost().add(balance.abs()));
-            }
-        });
+        BigDecimal netBalance = BigDecimal.ZERO;
+        BigDecimal totalWon = BigDecimal.ZERO;
+        BigDecimal totalLost = BigDecimal.ZERO;
 
-        playerRanking.setPlayer(games.get(0).getPlayer());
+        for (GamePlayer game : gamePlayers) {
+            BigDecimal balance = game.getBalance();
+            netBalance = netBalance.add(balance);
+
+            if (balance.compareTo(BigDecimal.ZERO) > 0) {
+                totalWon = totalWon.add(balance);
+            } else if (balance.compareTo(BigDecimal.ZERO) < 0) {
+                totalLost = totalLost.add(balance.abs());
+            }
+        }
+
+        playerRanking.setPlayer(gamePlayers.get(0).getPlayer());
         playerRanking.setGamesPlayed(gamesPlayed);
-        playerRanking.setNetBalance(playerRanking.getTotalWon().subtract(playerRanking.getTotalLost()));
+        playerRanking.setTotalWon(totalWon);
+        playerRanking.setTotalLost(totalLost);
+        playerRanking.setNetBalance(netBalance);
 
         playerRankingRepository.save(playerRanking);
-
     }
 
     public List<PlayerRanking> getPlayerRankings() {
