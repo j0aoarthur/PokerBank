@@ -20,7 +20,6 @@ public record GamePlayerRequestDTO(
         @DecimalMin(value = "0.01", message = "A banca inicial deve ser maior que zero.")
         BigDecimal initialCash,
 
-        @NotEmpty(message = "A contagem de fichas é obrigatória.")
         List<ChipCountRequestDTO> chips
 
 ) {
