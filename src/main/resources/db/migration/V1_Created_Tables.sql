@@ -19,6 +19,7 @@ CREATE TABLE players (
 CREATE TABLE games (
     id BIGSERIAL PRIMARY KEY,
     date DATE NOT NULL,
+    due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -29,9 +30,9 @@ CREATE TABLE game_players (
     player_id BIGINT NOT NULL,
     initial_cash DECIMAL(10, 2) NOT NULL,
     balance DECIMAL(10, 2) DEFAULT 0.00,
+    settled_amount DECIMAL(10, 2) DEFAULT 0.00,
     paid BOOLEAN DEFAULT FALSE,
     payment_situation VARCHAR(255),
-    due_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (game_id) REFERENCES games (id),
     FOREIGN KEY (player_id) REFERENCES players (id)

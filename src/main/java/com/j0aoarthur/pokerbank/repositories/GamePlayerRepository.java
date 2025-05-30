@@ -16,7 +16,7 @@ public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long> {
 
     Boolean existsByGameIdAndPlayerId(Long gameId, Long playerId);
 
-    List<GamePlayer> findByGameIdAndPaymentSituationOrderByBalance(Long gameId, PaymentSituation paymentSituation);
+    List<GamePlayer> findByGameIdAndPaymentSituationAndPaidIsFalseOrderByBalance(Long gameId, PaymentSituation paymentSituation);
 
 
 }
