@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,23 +30,53 @@ public class GamePlayer {
 
     private BigDecimal initialCash;
 
+    // Representa o resultado financeiro do jogador no jogo (lucro/prejuízo).
+    // Ex: +100.00 se ganhou, -50.00 se perdeu.
+    // Este valor NÃO será alterado pelas operações de pagamento.
     private BigDecimal balance;
 
-    private Boolean paid = false;
+    // Novo campo: Valor já pago (se 'balance' < 0) ou já recebido (se 'balance' > 0).
+    // Inicializado como BigDecimal.ZERO.
+    private BigDecimal settledAmount = BigDecimal.ZERO;
+
+    private Boolean paid = false; // True se settledAmount cobre totalmente o 'balance'.
 
     @Enumerated(EnumType.STRING)
-    private PaymentSituation paymentSituation;
-
-    private LocalDate dueDate;
+    private PaymentSituation paymentSituation; // PAY, RECEIVE, ou talvez NEUTRAL/SETTLED
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public GamePlayer(GamePlayerRequestDTO dto, Game game, Player player) {
         this.setInitialCash(dto.initialCash());
-        this.setBalance(BigDecimal.ZERO);
+        this.setBalance(BigDecimal.ZERO); // Balance é atualizado posteriormente com o resultado do jogo
+        this.setSettledAmount(BigDecimal.ZERO); // Garantir inicialização
+        this.setPaid(false); // Garantir inicialização
         this.setGame(game);
         this.setPlayer(player);
     }
-}
 
+    /**
+     * Calcula o valor pendente com base no 'balance' e no 'settledAmount'.
+     * Se paymentSituation == PAY (balance é negativo), retorna o valor absoluto da dívida restante.
+     * Se paymentSituation == RECEIVE (balance é positivo), retorna o crédito restante a receber.
+     * @return O valor pendente. Retorna BigDecimal.ZERO se não houver pendência ou situação indefinida.
+     */
+    @Transient
+    public BigDecimal getPendingAmount() {
+        if (this.balance == null || this.paymentSituation == null) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal currentSettledAmount = (this.settledAmount == null) ? BigDecimal.ZERO : this.settledAmount;
+
+        BigDecimal pending = BigDecimal.ZERO;
+        if (this.paymentSituation == PaymentSituation.PAY) {
+            pending = this.balance.abs().subtract(currentSettledAmount);
+        } else if (this.paymentSituation == PaymentSituation.RECEIVE) {
+            pending = this.balance.subtract(currentSettledAmount);
+        }
+
+        return pending.max(BigDecimal.ZERO);
+    }
+}

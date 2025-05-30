@@ -19,5 +19,7 @@ public class Game {
     private LocalDate date;
 
     private Boolean isFinished = false;
+
+    private LocalDate dueDate;
 }
 
