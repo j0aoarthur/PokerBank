@@ -9,7 +9,8 @@ public record GamePlayerBalanceDTO(
         Long playerId,
         String playerName,
         BigDecimal balance,
-        PaymentSituation paymentSituation
+        PaymentSituation paymentSituation,
+        Boolean paid
 ) {
 
     public GamePlayerBalanceDTO(GamePlayer gamePlayer) {
@@ -17,7 +18,8 @@ public record GamePlayerBalanceDTO(
                 gamePlayer.getPlayer().getId(),
                 gamePlayer.getPlayer().getName(),
                 gamePlayer.getBalance(),
-                gamePlayer.getPaymentSituation()
+                gamePlayer.getPaymentSituation(),
+                gamePlayer.getPaid()
         );
     }
 }
