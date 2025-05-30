@@ -4,12 +4,8 @@ import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerBalanceDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.PaymentSuggestionDTO;
-import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
 import com.j0aoarthur.pokerbank.services.GamePlayerService;
 import com.j0aoarthur.pokerbank.services.GameService;
 import jakarta.validation.Valid;
@@ -29,9 +25,6 @@ public class GameController {
 
     @Autowired
     private GamePlayerService gamePlayerService;
-
-    @Autowired
-    private ChipCountRepository chipCountRepository;
 
     @PostMapping
     public ResponseEntity<Game> createGame(@RequestBody @Valid GameRequestDTO gameDTO) {
@@ -66,22 +59,8 @@ public class GameController {
 
     @GetMapping("/{gameId}/players")
     public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersWithBalance(@PathVariable Long gameId) {
-        List<GamePlayer> balances = gamePlayerService.getGamePlayersWithBalance(gameId);
+        List<GamePlayer> balances = gamePlayerService.getGamePlayersByGame(gameId);
         return ResponseEntity.ok(balances.stream().map(GamePlayerBalanceDTO::new).toList());
-    }
-
-    @GetMapping("/{gameId}/payment-suggestion")
-    public ResponseEntity<List<PaymentSuggestionDTO>> getPaymentSuggestion(@PathVariable Long gameId) {
-        List<PaymentSuggestionDTO> paymentSuggestion = gameService.getPaymentSuggestion(gameId);
-        return ResponseEntity.ok(paymentSuggestion);
-    }
-
-    @GetMapping("/{gameId}/players/{playerId}")
-    public ResponseEntity<GamePlayerDTO> getGamePlayerWithBalance(@PathVariable Long gameId, @PathVariable Long playerId) {
-        GamePlayer gamePlayer = gamePlayerService.getGamePlayer(gameId, playerId);
-        List<ChipCount> chipCounts = chipCountRepository.findByGamePlayerId(gamePlayer.getId());
-
-        return ResponseEntity.ok(new GamePlayerDTO(gamePlayer,chipCounts));
     }
 
 

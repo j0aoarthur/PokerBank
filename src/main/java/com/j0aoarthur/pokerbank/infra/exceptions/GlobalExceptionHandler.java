@@ -22,4 +22,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlePlayerAlreadyInGame(PlayerAlreadyInGameException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<String> handlePaymentException(PaymentException ex) {
+        return new ResponseEntity<>("Erro ao realizar pagamento:" + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
