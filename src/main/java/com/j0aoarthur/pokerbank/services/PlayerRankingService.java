@@ -3,6 +3,7 @@ package com.j0aoarthur.pokerbank.services;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
 import com.j0aoarthur.pokerbank.repositories.PlayerRankingRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class PlayerRankingService {
     @Autowired
     private PlayerRankingRepository playerRankingRepository;
 
+    @Transactional
     public void updatePlayerRanking(Long playerId) {
         List<GamePlayer> gamePlayers = gamePlayerService.getGamesByPlayer(playerId);
 

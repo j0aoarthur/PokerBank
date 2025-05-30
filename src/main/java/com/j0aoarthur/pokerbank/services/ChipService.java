@@ -4,6 +4,7 @@ import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ public class ChipService {
     @Autowired
     private ChipRepository chipRepository;
 
+    @Transactional
     public Chip createChip(ChipRequestDTO dto) {
         Chip chip = new Chip(dto);
         return chipRepository.save(chip);
