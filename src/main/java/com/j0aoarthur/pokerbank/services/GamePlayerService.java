@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -77,11 +76,11 @@ public class GamePlayerService {
 
         if (gamePlayer.getBalance().compareTo(BigDecimal.ZERO) > 0) {
             gamePlayer.setPaymentSituation(PaymentSituation.RECEIVE);
-        } else {
+        } else if (gamePlayer.getBalance().compareTo(BigDecimal.ZERO) < 0) {
             gamePlayer.setPaymentSituation(PaymentSituation.PAY);
+        } else {
+            gamePlayer.setPaymentSituation(PaymentSituation.NONE);
         }
-
-        gamePlayer.setDueDate(LocalDate.now().plusWeeks(1));
 
         gamePlayerRepository.save(gamePlayer);
     }
@@ -100,12 +99,17 @@ public class GamePlayerService {
         return games;
     }
 
-    public List<GamePlayer> getGamePlayersWithBalance(Long gameId) {
+    public List<GamePlayer> getGamePlayersByGame(Long gameId) {
         return gamePlayerRepository.findByGameId(gameId);
     }
 
     public List<GamePlayer> getGamePlayersWithBalanceAndPaymentSituation(Long gameId, PaymentSituation paymentSituation) {
-        return gamePlayerRepository.findByGameIdAndPaymentSituationOrderByBalance(gameId, paymentSituation);
+        return gamePlayerRepository.findByGameIdAndPaymentSituationAndPaidIsFalseOrderByBalance(gameId, paymentSituation);
+    }
+
+    @Transactional
+    public void updateGamePlayer(GamePlayer gamePlayer) {
+        gamePlayerRepository.save(gamePlayer);
     }
 }
 
