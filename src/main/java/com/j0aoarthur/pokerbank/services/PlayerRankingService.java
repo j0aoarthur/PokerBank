@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlayerRankingService {
@@ -26,7 +27,12 @@ public class PlayerRankingService {
 
         int gamesPlayed = gamePlayers.size();
 
-        PlayerRanking playerRanking = playerRankingRepository.findById(playerId).orElseGet(PlayerRanking::new);
+        Optional<PlayerRanking> existingRanking = playerRankingRepository.findByPlayerId((playerId));
+        PlayerRanking playerRanking = existingRanking.orElseGet(() -> {
+            PlayerRanking newRanking = new PlayerRanking();
+            newRanking.setPlayer(gamePlayers.get(0).getPlayer());
+            return newRanking;
+        });
 
         BigDecimal netBalance = BigDecimal.ZERO;
         BigDecimal totalWon = BigDecimal.ZERO;
@@ -43,7 +49,6 @@ public class PlayerRankingService {
             }
         }
 
-        playerRanking.setPlayer(gamePlayers.get(0).getPlayer());
         playerRanking.setGamesPlayed(gamesPlayed);
         playerRanking.setTotalWon(totalWon);
         playerRanking.setTotalLost(totalLost);

@@ -50,7 +50,7 @@ CREATE TABLE chip_counts (
 
 CREATE TABLE player_ranking (
     id BIGSERIAL PRIMARY KEY,
-    player_id BIGINT NOT NULL,
+    player_id BIGINT NOT NULL UNIQUE,
     total_won DECIMAL(19, 2) DEFAULT 0.00,
     total_lost DECIMAL(19, 2) DEFAULT 0.00,
     net_balance DECIMAL(19, 2) DEFAULT 0.00,

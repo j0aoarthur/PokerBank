@@ -43,12 +43,12 @@ public class PaymentService {
         List<GamePlayer> gamePayers = gamePlayerService.getGamePlayersWithBalanceAndPaymentSituation(gameId, PaymentSituation.PAY)
                 .stream()
                 .filter(gp -> !gp.getPaid() && gp.getPendingAmount().compareTo(BigDecimal.ZERO) > 0)
-                .collect(Collectors.toList());
+                .toList();
 
         List<GamePlayer> gameReceivers = gamePlayerService.getGamePlayersWithBalanceAndPaymentSituation(gameId, PaymentSituation.RECEIVE)
                 .stream()
                 .filter(gp -> !gp.getPaid() && gp.getPendingAmount().compareTo(BigDecimal.ZERO) > 0)
-                .collect(Collectors.toList());
+                .toList();
 
         List<PlayerPaymentData> payersData = gamePayers.stream()
                 .map(gp -> new PlayerPaymentData(

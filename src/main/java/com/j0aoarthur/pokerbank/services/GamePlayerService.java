@@ -79,6 +79,7 @@ public class GamePlayerService {
         } else if (gamePlayer.getBalance().compareTo(BigDecimal.ZERO) < 0) {
             gamePlayer.setPaymentSituation(PaymentSituation.PAY);
         } else {
+            gamePlayer.setPaid(true);
             gamePlayer.setPaymentSituation(PaymentSituation.NONE);
         }
 
