@@ -58,15 +58,12 @@ public class PlayerRankingService {
     }
 
     public List<PlayerRanking> getPlayerRankings() {
-        return playerRankingRepository.findAll().stream()
+        return playerRankingRepository.findAllByGamesPlayedAfter(1).stream()
                 .sorted(Comparator.comparing(PlayerRanking::getNetBalance).reversed())
                 .toList();
     }
 
-    public List<PlayerRanking> getTopPlayers(int limit) {
-        return playerRankingRepository.findAll().stream()
-                .sorted(Comparator.comparing(PlayerRanking::getNetBalance).reversed())
-                .limit(limit)
-                .toList();
+    public List<PlayerRanking> getTopPlayers() {
+        return this.getPlayerRankings().stream().limit(3).toList();
     }
 }

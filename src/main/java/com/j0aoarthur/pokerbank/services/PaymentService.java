@@ -112,8 +112,8 @@ public class PaymentService {
 
         // Atualiza o valor liquidado para o pagador e recebedor
         BigDecimal paymentAmount = paymentDTO.amount();
-        payerGamePlayer.setSettledAmount(payerGamePlayer.getSettledAmount().add(paymentAmount));
-        receiverGamePlayer.setSettledAmount(receiverGamePlayer.getSettledAmount().add(paymentAmount));
+        payerGamePlayer.setSettledAmount((payerGamePlayer.getSettledAmount() == null ? BigDecimal.ZERO : payerGamePlayer.getSettledAmount()).add(paymentAmount));
+        receiverGamePlayer.setSettledAmount((receiverGamePlayer.getSettledAmount() == null ? BigDecimal.ZERO : receiverGamePlayer.getSettledAmount()).add(paymentAmount));
 
         // Verifica se o pagador quitou sua dívida (balance é negativo)
         if (payerGamePlayer.getSettledAmount().compareTo(payerGamePlayer.getBalance().abs()) >= 0) {
@@ -125,8 +125,8 @@ public class PaymentService {
             receiverGamePlayer.setPaid(true);
         }
 
-        gamePlayerService.updateGamePlayer(payerGamePlayer);
-        gamePlayerService.updateGamePlayer(receiverGamePlayer);
+        gamePlayerService.updateGamePlayerPayment(payerGamePlayer);
+        gamePlayerService.updateGamePlayerPayment(receiverGamePlayer);
         gameService.checkGameFinished(payerGamePlayer.getGame().getId());
     }
 

@@ -46,15 +46,15 @@ public class GamePlayerService {
         // Criar relação GamePlayer
         GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(dto, game, player));
 
-        this.addChipCountToGamePlayer(gamePlayer, dto);
+        this.addChipCountToGamePlayer(gamePlayer, dto.chips());
         this.countChipsAndBalance(gamePlayer);
         playerRankingService.updatePlayerRanking(gamePlayer.getPlayer().getId());
         return gamePlayer;
     }
 
     @Transactional
-    protected void addChipCountToGamePlayer(GamePlayer gamePlayer, GamePlayerRequestDTO dto) {
-        for (GamePlayerRequestDTO.ChipCountRequestDTO chipCountDTO : dto.chips()) {
+    protected void addChipCountToGamePlayer(GamePlayer gamePlayer, List<ChipCountRequestDTO> chips) {
+        for (ChipCountRequestDTO chipCountDTO : chips) {
             Chip chip = chipService.getChipById(chipCountDTO.chipId());
 
             // Criar relação ChipCount

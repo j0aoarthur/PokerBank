@@ -29,8 +29,8 @@ public class PaymentController {
 
     @GetMapping("/expired-games")
     public ResponseEntity<List<GameDTO>> getExpiredGames() {
-        List<Game> expriedGames = paymentService.getExpiredGames();
-        return ResponseEntity.ok(expriedGames.stream().map(GameDTO::new).toList());
+        List<Game> expiredGames = paymentService.getExpiredGames();
+        return ResponseEntity.ok(expiredGames.stream().map(GameDTO::new).toList());
     }
 
     @GetMapping("/expired-payments/{playerId}")

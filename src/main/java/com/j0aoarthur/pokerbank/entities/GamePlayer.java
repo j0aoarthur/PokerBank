@@ -49,9 +49,9 @@ public class GamePlayer {
 
     public GamePlayer(GamePlayerRequestDTO dto, Game game, Player player) {
         this.setInitialCash(dto.initialCash());
-        this.setBalance(BigDecimal.ZERO); // Balance é atualizado posteriormente com o resultado do jogo
-        this.setSettledAmount(BigDecimal.ZERO); // Garantir inicialização
-        this.setPaid(false); // Garantir inicialização
+        this.setBalance(BigDecimal.ZERO);
+        this.setSettledAmount(BigDecimal.ZERO);
+        this.setPaid(false);
         this.setGame(game);
         this.setPlayer(player);
     }
