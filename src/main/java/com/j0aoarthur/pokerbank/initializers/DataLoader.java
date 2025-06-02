@@ -1,9 +1,6 @@
 package com.j0aoarthur.pokerbank.initializers;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.PlayerRequestDTO;
+import com.j0aoarthur.pokerbank.DTOs.request.*;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.Player;
 import com.j0aoarthur.pokerbank.services.ChipService;
@@ -54,7 +51,7 @@ public class DataLoader implements CommandLineRunner {
         Player player5 = playerService.createPlayer(new PlayerRequestDTO("Rafa"));
 
         // Adicionar Partida
-        Game game = gameService.createGame(new GameRequestDTO(LocalDate.now()));
+        Game game = gameService.createGame(new GameRequestDTO(LocalDate.now().minusWeeks(2)));
 
         // Adicionar Mão de cada jogador da partida
         List<GamePlayerRequestDTO> players = List.of(
@@ -63,9 +60,9 @@ public class DataLoader implements CommandLineRunner {
                         player1.getId(),
                         new BigDecimal("20.00"),
                         List.of(
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(5L, 1),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(4L, 6),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(3L, 9)
+                                new ChipCountRequestDTO(5L, 1),
+                                new ChipCountRequestDTO(4L, 6),
+                                new ChipCountRequestDTO(3L, 9)
                         )
                 ),
                 new GamePlayerRequestDTO(
@@ -73,9 +70,9 @@ public class DataLoader implements CommandLineRunner {
                         player2.getId(),
                         new BigDecimal("12.00"),
                         List.of(
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(5L, 2),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(4L, 5),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(2L, 10)
+                                new ChipCountRequestDTO(5L, 2),
+                                new ChipCountRequestDTO(4L, 5),
+                                new ChipCountRequestDTO(2L, 10)
                         )
                 ),
                 new GamePlayerRequestDTO(
@@ -83,10 +80,10 @@ public class DataLoader implements CommandLineRunner {
                         player3.getId(),
                         new BigDecimal("8.00"),
                         List.of(
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(4L, 4),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(3L, 1),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(2L, 4),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(1L, 5)
+                                new ChipCountRequestDTO(4L, 4),
+                                new ChipCountRequestDTO(3L, 1),
+                                new ChipCountRequestDTO(2L, 4),
+                                new ChipCountRequestDTO(1L, 5)
                         )
                 ),
                 new GamePlayerRequestDTO(
@@ -94,9 +91,9 @@ public class DataLoader implements CommandLineRunner {
                         player4.getId(),
                         new BigDecimal("19.50"),
                         List.of(
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(5L, 3),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(3L, 9),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(1L, 20)
+                                new ChipCountRequestDTO(5L, 3),
+                                new ChipCountRequestDTO(3L, 9),
+                                new ChipCountRequestDTO(1L, 20)
                         )
                 ),
                 new GamePlayerRequestDTO(
@@ -104,10 +101,10 @@ public class DataLoader implements CommandLineRunner {
                         player5.getId(),
                         new BigDecimal("10.25"),
                         List.of(
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(5L, 1),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(4L, 2),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(2L, 5),
-                                new GamePlayerRequestDTO.ChipCountRequestDTO(1L, 10)
+                                new ChipCountRequestDTO(5L, 1),
+                                new ChipCountRequestDTO(4L, 2),
+                                new ChipCountRequestDTO(2L, 5),
+                                new ChipCountRequestDTO(1L, 10)
                         )
                 )
         );
@@ -115,5 +112,31 @@ public class DataLoader implements CommandLineRunner {
         for (GamePlayerRequestDTO player : players) {
             gamePlayerService.addPlayerToGame(player);
         }
+
+        Game game2 = gameService.createGame(new GameRequestDTO(LocalDate.now().minusDays(1)));
+
+        List<GamePlayerRequestDTO> players2 = List.of(
+                new GamePlayerRequestDTO(
+                        game2.getId(),
+                        player1.getId(),
+                        new BigDecimal("10.00"),
+                        List.of(
+                                new ChipCountRequestDTO(5L, 3)
+                        )
+                ),
+                new GamePlayerRequestDTO(
+                        game2.getId(),
+                        player2.getId(),
+                        new BigDecimal("10.00"),
+                        List.of(
+                                new ChipCountRequestDTO(5L, 1)
+                        )
+                ));
+
+        for (GamePlayerRequestDTO player : players2) {
+            gamePlayerService.addPlayerToGame(player);
+        }
     }
+
+
 }
