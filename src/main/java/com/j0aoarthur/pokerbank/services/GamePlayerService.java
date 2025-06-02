@@ -1,6 +1,8 @@
 package com.j0aoarthur.pokerbank.services;
 
+import com.j0aoarthur.pokerbank.DTOs.request.ChipCountRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.DTOs.request.UpdateGamePlayerDTO;
 import com.j0aoarthur.pokerbank.entities.*;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
@@ -46,15 +48,15 @@ public class GamePlayerService {
         // Criar relação GamePlayer
         GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(dto, game, player));
 
-        this.addChipCountToGamePlayer(gamePlayer, dto);
+        this.addChipCountToGamePlayer(gamePlayer, dto.chips());
         this.countChipsAndBalance(gamePlayer);
         playerRankingService.updatePlayerRanking(gamePlayer.getPlayer().getId());
         return gamePlayer;
     }
 
     @Transactional
-    protected void addChipCountToGamePlayer(GamePlayer gamePlayer, GamePlayerRequestDTO dto) {
-        for (GamePlayerRequestDTO.ChipCountRequestDTO chipCountDTO : dto.chips()) {
+    protected void addChipCountToGamePlayer(GamePlayer gamePlayer, List<ChipCountRequestDTO> chips) {
+        for (ChipCountRequestDTO chipCountDTO : chips) {
             Chip chip = chipService.getChipById(chipCountDTO.chipId());
 
             // Criar relação ChipCount
@@ -101,15 +103,44 @@ public class GamePlayerService {
     }
 
     public List<GamePlayer> getGamePlayersByGame(Long gameId) {
-        return gamePlayerRepository.findByGameId(gameId);
+        return gamePlayerRepository.findByGameIdOrderByBalanceDesc(gameId);
     }
 
     public List<GamePlayer> getGamePlayersWithBalanceAndPaymentSituation(Long gameId, PaymentSituation paymentSituation) {
         return gamePlayerRepository.findByGameIdAndPaymentSituationAndPaidIsFalseOrderByBalance(gameId, paymentSituation);
     }
 
+    public GamePlayer getGamePlayerByGameAndPlayer(Long gameId, Long playerId) {
+        return gamePlayerRepository.findByGameIdAndPlayerId(gameId, playerId)
+                .orElseThrow(() -> new EntityNotFoundException("O jogador com ID: " + playerId + " não está na partida com ID: " + gameId));
+    }
+
+    public List<ChipCount> getChipCountsByGamePlayer(Long gamePlayerId) {
+        return chipCountRepository.findByGamePlayerId(gamePlayerId).stream().filter(chipCount -> chipCount.getQuantity() > 0).toList();
+    }
+
     @Transactional
-    public void updateGamePlayer(GamePlayer gamePlayer) {
+    public GamePlayer updateGamePlayer(Long gameId, Long playerId, UpdateGamePlayerDTO dto) {
+        GamePlayer gamePlayer = this.getGamePlayerByGameAndPlayer(gameId, playerId);
+
+        List<ChipCount> existingChipCounts = chipCountRepository.findByGamePlayerId(gamePlayer.getId());
+        chipCountRepository.deleteAll(existingChipCounts);
+        gamePlayer.setBalance(BigDecimal.ZERO);
+
+        if (dto.initialCash() != null) {
+            gamePlayer.setInitialCash(dto.initialCash());
+        }
+
+        this.addChipCountToGamePlayer(gamePlayer, dto.chips());
+
+        this.countChipsAndBalance(gamePlayer);
+        playerRankingService.updatePlayerRanking(gamePlayer.getPlayer().getId());
+
+        return gamePlayer;
+    }
+
+    @Transactional
+    public void updateGamePlayerPayment(GamePlayer gamePlayer) {
         gamePlayerRepository.save(gamePlayer);
     }
 }

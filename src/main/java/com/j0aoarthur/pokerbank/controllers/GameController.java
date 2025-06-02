@@ -2,8 +2,9 @@ package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerBalanceDTO;
+import com.j0aoarthur.pokerbank.DTOs.request.UpdateGamePlayerDTO;
+import com.j0aoarthur.pokerbank.DTOs.response.*;
+import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.services.GamePlayerService;
@@ -33,9 +34,9 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Game>> getAllGames() {
+    public ResponseEntity<List<GameDTO>> getAllGames() {
         List<Game> games = gameService.getAllGames();
-        return ResponseEntity.ok(games);
+        return ResponseEntity.ok(games.stream().map(GameDTO::new).toList());
     }
 
     @GetMapping("/{gameId}")
@@ -57,10 +58,25 @@ public class GameController {
         return ResponseEntity.ok(gamePlayer);
     }
 
+    @PutMapping("/{gameId}/players/{playerId}")
+    public ResponseEntity<GamePlayer> updateGamePlayer(@PathVariable Long gameId, @PathVariable Long playerId, @RequestBody @Valid UpdateGamePlayerDTO dto) {
+        GamePlayer updatedGamePlayer = gamePlayerService.updateGamePlayer(gameId, playerId, dto);
+        return ResponseEntity.ok(updatedGamePlayer);
+    }
+
     @GetMapping("/{gameId}/players")
-    public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersWithBalance(@PathVariable Long gameId) {
+    public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersByGame(@PathVariable Long gameId) {
         List<GamePlayer> balances = gamePlayerService.getGamePlayersByGame(gameId);
         return ResponseEntity.ok(balances.stream().map(GamePlayerBalanceDTO::new).toList());
+    }
+
+    @GetMapping("/{gameId}/players/{playerId}")
+    public ResponseEntity<GamePlayerInfoDTO> getGamePlayerByGameAndPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
+        GamePlayer gamePlayer = gamePlayerService.getGamePlayerByGameAndPlayer(gameId, playerId);
+        List<ChipCount> chipCounts = gamePlayerService.getChipCountsByGamePlayer(gamePlayer.getId());
+
+        GamePlayerInfoDTO gamePlayerInfo = new GamePlayerInfoDTO(gamePlayer, chipCounts.stream().map(ChipCountDTO::new).toList());
+        return ResponseEntity.ok(gamePlayerInfo);
     }
 
 

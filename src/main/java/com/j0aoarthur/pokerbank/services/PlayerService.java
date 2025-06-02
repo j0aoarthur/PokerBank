@@ -2,13 +2,13 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.PlayerRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Player;
+import com.j0aoarthur.pokerbank.entities.Role;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.PlayerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,7 +21,14 @@ public class PlayerService {
     public Player createPlayer(PlayerRequestDTO playerDTO) {
         Player player = new Player();
         player.setName(playerDTO.name());
-        player.setCreatedAt(LocalDateTime.now());
+        return playerRepository.save(player);
+    }
+
+    @Transactional
+    public Player createAdmin(PlayerRequestDTO playerDTO) {
+        Player player = new Player();
+        player.setName(playerDTO.name());
+        player.setRole(Role.ADMIN);
         return playerRepository.save(player);
     }
 
@@ -31,7 +38,11 @@ public class PlayerService {
     }
 
     public List<Player> getAllPlayers() {
-        return playerRepository.findAll();
+        List<Player> allPlayers = playerRepository.findAll();
+        if (allPlayers.isEmpty()) {
+            throw new EntityNotFoundException("Nenhum jogador encontrado.");
+        }
+        return allPlayers;
     }
 
     public List<Player> getPlayersNotInGame(Long gameId) {

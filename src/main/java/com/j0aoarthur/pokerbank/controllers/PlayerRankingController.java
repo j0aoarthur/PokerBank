@@ -26,7 +26,7 @@ public class PlayerRankingController {
 
     @GetMapping("/top")
     public ResponseEntity<List<PlayerRankingDTO>> getTopPlayers(@RequestParam(defaultValue = "4") int limit) {
-        List<PlayerRanking> topPlayers = playerRankingService.getTopPlayers(limit);
+        List<PlayerRanking> topPlayers = playerRankingService.getTopPlayers();
         return ResponseEntity.ok(topPlayers.stream().map(PlayerRankingDTO::new).toList());
     }
 

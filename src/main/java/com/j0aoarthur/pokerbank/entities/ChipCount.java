@@ -1,6 +1,6 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.DTOs.request.ChipCountRequestDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,7 @@ public class ChipCount {
 
     private Integer quantity;
 
-    public ChipCount(GamePlayerRequestDTO.ChipCountRequestDTO chipCountDTO, GamePlayer gamePlayer, Chip chip) {
+    public ChipCount(ChipCountRequestDTO chipCountDTO, GamePlayer gamePlayer, Chip chip) {
         this.setGamePlayer(gamePlayer);
         this.setChip(chip);
         this.setQuantity(chipCountDTO.quantity());
