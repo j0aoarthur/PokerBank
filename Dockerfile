@@ -8,9 +8,9 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17
 
-COPY --from=build /app/target/pokerbank.jar /app/pokerbank.jar
+COPY --from=build /app/target/*.jar /app/app.jar
 
 WORKDIR /app
 EXPOSE 8080
 
-ENTRYPOINT java -jar pokerbank.jar
+ENTRYPOINT java -jar app.jar
