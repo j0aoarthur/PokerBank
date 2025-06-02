@@ -109,7 +109,27 @@ public class GamePlayerService {
     }
 
     @Transactional
-    public void updateGamePlayer(GamePlayer gamePlayer) {
+    public GamePlayer updateGamePlayer(Long gameId, Long playerId, UpdateGamePlayerDTO dto) {
+        GamePlayer gamePlayer = this.getGamePlayerByGameAndPlayer(gameId, playerId);
+
+        List<ChipCount> existingChipCounts = chipCountRepository.findByGamePlayerId(gamePlayer.getId());
+        chipCountRepository.deleteAll(existingChipCounts);
+        gamePlayer.setBalance(BigDecimal.ZERO);
+
+        if (dto.initialCash() != null) {
+            gamePlayer.setInitialCash(dto.initialCash());
+        }
+
+        this.addChipCountToGamePlayer(gamePlayer, dto.chips());
+
+        this.countChipsAndBalance(gamePlayer);
+        playerRankingService.updatePlayerRanking(gamePlayer.getPlayer().getId());
+
+        return gamePlayer;
+    }
+
+    @Transactional
+    public void updateGamePlayerPayment(GamePlayer gamePlayer) {
         gamePlayerRepository.save(gamePlayer);
     }
 }

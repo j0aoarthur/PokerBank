@@ -57,6 +57,12 @@ public class GameController {
         return ResponseEntity.ok(gamePlayer);
     }
 
+    @PutMapping("/{gameId}/players/{playerId}")
+    public ResponseEntity<GamePlayer> updateGamePlayer(@PathVariable Long gameId, @PathVariable Long playerId, @RequestBody @Valid UpdateGamePlayerDTO dto) {
+        GamePlayer updatedGamePlayer = gamePlayerService.updateGamePlayer(gameId, playerId, dto);
+        return ResponseEntity.ok(updatedGamePlayer);
+    }
+
     @GetMapping("/{gameId}/players")
     public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersWithBalance(@PathVariable Long gameId) {
         List<GamePlayer> balances = gamePlayerService.getGamePlayersByGame(gameId);

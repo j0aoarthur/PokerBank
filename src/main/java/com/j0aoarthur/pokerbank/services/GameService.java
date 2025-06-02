@@ -65,13 +65,17 @@ public class GameService {
 
         if (totalBalance.compareTo(BigDecimal.ZERO) == 0) {
             observation = "O saldo do jogo está correto.";
-        } else {
-            observation = "O saldo do jogo não está correto";
+        } else if (totalBalance.compareTo(BigDecimal.ZERO) > 0) {
+            observation = "Falta dinheiro no jogo. O saldo total faltando é: " + totalBalance;
+        }
+        else {
+            observation = "Dinheiro a mais no jogo. O saldo total a mais é: " + totalBalance;
         }
 
         return new GameInfoDTO(
                 game.getId(),
                 game.getDate(),
+                game.getDueDate(),
                 totalBalance,
                 totalPrize,
                 totalPlayers,
