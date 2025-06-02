@@ -18,6 +18,9 @@ public class Player {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.PLAYER;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
