@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long> {
-    List<GamePlayer> findByGameId(Long gameId);
+    List<GamePlayer> findByGameIdOrderByBalanceDesc(Long gameId);
 
     List<GamePlayer> findByPlayerId(Long playerId);
 
