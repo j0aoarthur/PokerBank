@@ -8,9 +8,14 @@ import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -36,9 +41,15 @@ public class GameService {
                 .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada com o ID: " + id));
     }
 
+    // Listar todas as partidas com paginação
+    public Page<Game> getAllGames(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        return gameRepository.findAll(pageable);
+    }
+
     // Listar todas as partidas
     public List<Game> getAllGames() {
-        return gameRepository.findAll();
+        return gameRepository.findAll().stream().sorted(Comparator.comparing(Game::getDate).reversed()).toList();
     }
 
     public List<Game> getLatestGames() {

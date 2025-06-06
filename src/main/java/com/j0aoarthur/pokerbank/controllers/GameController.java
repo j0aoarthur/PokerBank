@@ -11,6 +11,7 @@ import com.j0aoarthur.pokerbank.services.GamePlayerService;
 import com.j0aoarthur.pokerbank.services.GameService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +35,11 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameDTO>> getAllGames() {
-        List<Game> games = gameService.getAllGames();
-        return ResponseEntity.ok(games.stream().map(GameDTO::new).toList());
+    public ResponseEntity<Page<GameDTO>> getAllGames(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size) {
+
+        Page<Game> games = gameService.getAllGames(page, size);
+        return ResponseEntity.ok(games.map(GameDTO::new));
     }
 
     @GetMapping("/{gameId}")

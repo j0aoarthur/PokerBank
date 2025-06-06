@@ -40,11 +40,11 @@ public class DataLoader implements CommandLineRunner {
 
 
         // Adicionar fichas de poker
-        chipService.createChip(new ChipRequestDTO("preta", new BigDecimal("0.10")));
-        chipService.createChip(new ChipRequestDTO("verde", new BigDecimal("0.25")));
-        chipService.createChip(new ChipRequestDTO("azul", new BigDecimal("0.50")));
-        chipService.createChip(new ChipRequestDTO("amarela", new BigDecimal("1.00")));
-        chipService.createChip(new ChipRequestDTO("vermelha", new BigDecimal("5.00")));
+        chipService.createChip(new ChipRequestDTO("preta","#000", new BigDecimal("0.10")));
+        chipService.createChip(new ChipRequestDTO("verde", "#0F0", new BigDecimal("0.25")));
+        chipService.createChip(new ChipRequestDTO("azul", "#00F", new BigDecimal("0.50")));
+        chipService.createChip(new ChipRequestDTO("amarela", "#FF0", new BigDecimal("1.00")));
+        chipService.createChip(new ChipRequestDTO("vermelha","#F00", new BigDecimal("5.00")));
 
         // Adicionar Jogadores
         Player player1 = playerService.createPlayer(new PlayerRequestDTO("Cauã"));
