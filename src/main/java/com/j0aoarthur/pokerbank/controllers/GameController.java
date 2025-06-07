@@ -12,6 +12,9 @@ import com.j0aoarthur.pokerbank.services.GameService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +38,8 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<GameDTO>> getAllGames(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "10") int size) {
-
-        Page<Game> games = gameService.getAllGames(page, size);
+    public ResponseEntity<Page<GameDTO>> getAllGames(@PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Game> games = gameService.getAllGames(pageable);
         return ResponseEntity.ok(games.map(GameDTO::new));
     }
 

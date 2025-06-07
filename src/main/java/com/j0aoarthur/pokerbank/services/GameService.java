@@ -9,9 +9,7 @@ import com.j0aoarthur.pokerbank.repositories.GameRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,8 +40,7 @@ public class GameService {
     }
 
     // Listar todas as partidas com paginação
-    public Page<Game> getAllGames(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+    public Page<Game> getAllGames(Pageable pageable) {
         return gameRepository.findAll(pageable);
     }
 
