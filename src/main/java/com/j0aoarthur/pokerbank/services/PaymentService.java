@@ -138,7 +138,7 @@ public class PaymentService {
     public List<Game> getExpiredGames() {
         List<Game> allGames = gameService.getAllGames();
         return allGames.stream()
-                .filter(game -> game.getDueDate().isBefore(java.time.LocalDate.now()))
+                .filter(game -> !game.getDueDate().isAfter(java.time.LocalDate.now()))
                 .filter(game -> !game.getIsFinished())
                 .sorted(Comparator.comparing(Game::getDueDate).reversed())
                 .collect(Collectors.toList());

@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class ChipService {
 
 
     public List<Chip> getAllChips() {
-        return chipRepository.findAll();
+        return chipRepository.findAll().stream().sorted(Comparator.comparing(Chip::getValue)).toList();
     }
 
 

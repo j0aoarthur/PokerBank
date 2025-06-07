@@ -45,7 +45,7 @@ public class DataLoader implements CommandLineRunner {
 
         // Adicionar Jogadores
         Player player1 = playerService.createPlayer(new PlayerRequestDTO("Cauã"));
-        Player player2 = playerService.createPlayer(new PlayerRequestDTO("João Arthur"));
+        Player player2 = playerService.createAdmin(new PlayerRequestDTO("João Arthur"));
         Player player3 = playerService.createPlayer(new PlayerRequestDTO("Kawk"));
         Player player4 = playerService.createPlayer(new PlayerRequestDTO("Lanche"));
         Player player5 = playerService.createPlayer(new PlayerRequestDTO("Rafa"));
@@ -112,31 +112,5 @@ public class DataLoader implements CommandLineRunner {
         for (GamePlayerRequestDTO player : players) {
             gamePlayerService.addPlayerToGame(player);
         }
-
-        Game game2 = gameService.createGame(new GameRequestDTO(LocalDate.now().minusDays(1)));
-
-        List<GamePlayerRequestDTO> players2 = List.of(
-                new GamePlayerRequestDTO(
-                        game2.getId(),
-                        player1.getId(),
-                        new BigDecimal("10.00"),
-                        List.of(
-                                new ChipCountRequestDTO(5L, 3)
-                        )
-                ),
-                new GamePlayerRequestDTO(
-                        game2.getId(),
-                        player2.getId(),
-                        new BigDecimal("10.00"),
-                        List.of(
-                                new ChipCountRequestDTO(5L, 1)
-                        )
-                ));
-
-        for (GamePlayerRequestDTO player : players2) {
-            gamePlayerService.addPlayerToGame(player);
-        }
     }
-
-
 }

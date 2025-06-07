@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -38,7 +39,7 @@ public class PlayerService {
     }
 
     public List<Player> getAllPlayers() {
-        List<Player> allPlayers = playerRepository.findAll();
+        List<Player> allPlayers = playerRepository.findAll().stream().sorted(Comparator.comparing(Player::getName)).toList();
         if (allPlayers.isEmpty()) {
             throw new EntityNotFoundException("Nenhum jogador encontrado.");
         }
@@ -46,6 +47,6 @@ public class PlayerService {
     }
 
     public List<Player> getPlayersNotInGame(Long gameId) {
-        return playerRepository.findPlayersNotInGame(gameId);
+        return playerRepository.findPlayersNotInGameOrderByName(gameId);
     }
 }
