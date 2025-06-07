@@ -1,6 +1,7 @@
 package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
+import com.j0aoarthur.pokerbank.DTOs.response.ChipDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.services.ChipService;
 import jakarta.transaction.Transactional;
@@ -27,8 +28,8 @@ public class ChipController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Chip>> getAllChips() {
+    public ResponseEntity<List<ChipDTO>> getAllChips() {
         List<Chip> chipList = chipService.getAllChips();
-        return ResponseEntity.ok(chipList);
+        return ResponseEntity.ok(chipList.stream().map(ChipDTO::new).toList());
     }
 }

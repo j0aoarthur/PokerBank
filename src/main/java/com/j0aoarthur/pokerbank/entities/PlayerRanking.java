@@ -22,6 +22,9 @@ public class PlayerRanking {
     @JoinColumn(name = "player_id")
     private Player player;
 
+    @Column(name = "rank")
+    private Integer rank;
+
     private BigDecimal totalWon = BigDecimal.ZERO;
 
     private BigDecimal totalLost = BigDecimal.ZERO;

@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface PlayerRankingRepository extends JpaRepository<PlayerRanking, Long> {
     Optional<PlayerRanking> findByPlayerId(Long playerId);
 
-    List<PlayerRanking> findAllByGamesPlayedAfter(Integer gamesPlayedAfter);
+    List<PlayerRanking> findAllByGamesPlayedAfterOrderByNetBalanceDesc(Integer gamesPlayedAfter);
 }

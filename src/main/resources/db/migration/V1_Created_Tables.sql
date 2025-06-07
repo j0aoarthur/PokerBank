@@ -4,8 +4,9 @@
 -- Create the 'chips' table
 CREATE TABLE chips (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    value DECIMAL(10, 2) NOT NULL
+    color VARCHAR(255) NOT NULL,
+    colorHex VARCHAR(7) NOT NULL,
+    chip_value DECIMAL(10, 2) NOT NULL
 );
 
 -- Create the 'players' table
@@ -52,6 +53,7 @@ CREATE TABLE chip_counts (
 CREATE TABLE player_ranking (
     id BIGSERIAL PRIMARY KEY,
     player_id BIGINT NOT NULL UNIQUE,
+    rank INT,
     total_won DECIMAL(19, 2) DEFAULT 0.00,
     total_lost DECIMAL(19, 2) DEFAULT 0.00,
     net_balance DECIMAL(19, 2) DEFAULT 0.00,

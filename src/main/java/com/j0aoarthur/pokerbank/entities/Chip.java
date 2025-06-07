@@ -20,11 +20,14 @@ public class Chip {
 
     private String color;
 
+    private String colorHex;
+
     @Column(name = "chip_value")
     private BigDecimal value;
 
     public Chip(ChipRequestDTO dto) {
         this.setColor(dto.color());
+        this.setColorHex(dto.colorHex());
         this.setValue(dto.value());
     }
 }

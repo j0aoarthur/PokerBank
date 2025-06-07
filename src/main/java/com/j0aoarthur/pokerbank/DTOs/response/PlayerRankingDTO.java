@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 public record PlayerRankingDTO(
         Long playerId,
+        Integer rank,
         String playerName,
         int gamesPlayed,
         BigDecimal netBalance
@@ -13,6 +14,7 @@ public record PlayerRankingDTO(
     public PlayerRankingDTO(PlayerRanking pr) {
         this(
                 pr.getPlayer().getId(),
+                pr.getRank(),
                 pr.getPlayer().getName(),
                 pr.getGamesPlayed(),
                 pr.getNetBalance()

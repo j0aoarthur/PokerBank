@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,15 +54,23 @@ public class PlayerRankingService {
         playerRanking.setNetBalance(netBalance);
 
         playerRankingRepository.save(playerRanking);
+
+        updateRankingPositions();
     }
 
     public List<PlayerRanking> getPlayerRankings() {
-        return playerRankingRepository.findAllByGamesPlayedAfter(1).stream()
-                .sorted(Comparator.comparing(PlayerRanking::getNetBalance).reversed())
-                .toList();
+        return playerRankingRepository.findAllByGamesPlayedAfterOrderByNetBalanceDesc(1);
     }
 
     public List<PlayerRanking> getTopPlayers() {
         return this.getPlayerRankings().stream().limit(3).toList();
+    }
+
+    private void updateRankingPositions() {
+        List<PlayerRanking> rankings = this.getPlayerRankings();
+        for (int i = 0; i < rankings.size(); i++) {
+            rankings.get(i).setRank(i + 1);
+            playerRankingRepository.save(rankings.get(i));
+        }
     }
 }
