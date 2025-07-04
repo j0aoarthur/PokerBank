@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "game_players")
@@ -27,6 +29,9 @@ public class GamePlayer {
     @ManyToOne(optional = false)
     @JoinColumn(name = "player_id")
     private Player player;
+
+    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ChipCount> chipCounts = new ArrayList<>();
 
     private BigDecimal initialCash;
 
