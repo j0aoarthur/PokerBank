@@ -136,5 +136,29 @@ public class DataLoader implements CommandLineRunner {
         for (GamePlayerRequestDTO player : players2) {
             gamePlayerService.addPlayerToGame(player);
         }
+
+        Game game3 = gameService.createGame(new GameRequestDTO(LocalDate.now().minusDays(2)));
+
+        List<GamePlayerRequestDTO> players3 = List.of(
+                new GamePlayerRequestDTO(
+                        game3.getId(),
+                        player1.getId(),
+                        new BigDecimal("10.00"),
+                        List.of(
+                                new ChipCountRequestDTO(5L, 3)
+                        )
+                ),
+                new GamePlayerRequestDTO(
+                        game3.getId(),
+                        player2.getId(),
+                        new BigDecimal("10.00"),
+                        List.of(
+                                new ChipCountRequestDTO(5L, 1)
+                        )
+                ));
+
+        for (GamePlayerRequestDTO player : players3) {
+            gamePlayerService.addPlayerToGame(player);
+        }
     }
 }
