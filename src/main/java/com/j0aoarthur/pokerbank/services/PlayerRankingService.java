@@ -2,6 +2,7 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
+import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.PlayerRankingRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,14 @@ public class PlayerRankingService {
 
     @Transactional
     public void updatePlayerRanking(Long playerId) {
-        List<GamePlayer> gamePlayers = gamePlayerService.getGamesByPlayer(playerId);
+        List<GamePlayer> gamePlayers;
+
+        try {
+            gamePlayers = gamePlayerService.getGamesByPlayer(playerId);
+        } catch (EntityNotFoundException ex) {
+            // Se o jogador não tiver jogado nenhuma partida, não há ranking a atualizar
+            return;
+        }
 
         int gamesPlayed = gamePlayers.size();
 

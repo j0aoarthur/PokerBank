@@ -9,6 +9,7 @@ import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.services.GamePlayerService;
 import com.j0aoarthur.pokerbank.services.GameService;
+import com.j0aoarthur.pokerbank.services.PlayerRankingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,12 +50,17 @@ public class GameController {
         return ResponseEntity.ok(gameInfo);
     }
 
-    @GetMapping("/latest")
-    public ResponseEntity<List<Game>> getLatestGames() {
-        List<Game> latestGames = gameService.getLatestGames();
-        return ResponseEntity.ok(latestGames);
+    @DeleteMapping("/{gameId}")
+    public ResponseEntity<Void> deleteGame(@PathVariable Long gameId) {
+        gameService.deleteGame(gameId);
+        return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/latest")
+    public ResponseEntity<List<GameDTO>> getLatestGames() {
+        List<Game> latestGames = gameService.getLatestGames();
+        return ResponseEntity.ok(latestGames.stream().map(GameDTO::new).toList());
+    }
 
     @PostMapping("/add-player")
     public ResponseEntity<GamePlayer> addPlayerToGame(@RequestBody @Valid GamePlayerRequestDTO dto) {

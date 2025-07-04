@@ -25,12 +25,33 @@ public class GameService {
     @Autowired
     private GamePlayerService gamePlayerService;
 
+    @Autowired
+    private PlayerRankingService playerRankingService;
+
     @Transactional
     public Game createGame(GameRequestDTO dto) {
         Game game = new Game();
         game.setDate(dto.date());
         game.setDueDate(game.getDate().plusWeeks(1));
         return gameRepository.save(game);
+    }
+
+    @Transactional
+    public void deleteGame(Long id) {
+        Game game = this.getGameById(id);
+        if (game.getIsFinished()) {
+            throw new IllegalStateException("Não é possível excluir uma partida já finalizada.");
+        }
+
+        // Obter todos os jogadores da partida antes de excluir a partida
+        List<GamePlayer> gamePlayers = gamePlayerService.getGamePlayersByGame(id);
+
+        gameRepository.delete(game);
+
+        // Atualizar o ranking dos jogadores da partida
+        gamePlayers.forEach(gamePlayer -> {
+            playerRankingService.updatePlayerRanking(gamePlayer.getPlayer().getId());
+        });
     }
 
     // Buscar partida por ID
