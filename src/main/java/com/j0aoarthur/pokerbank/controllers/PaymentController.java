@@ -10,8 +10,6 @@ import com.j0aoarthur.pokerbank.services.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +47,7 @@ public class PaymentController {
 
     @PostMapping
     @Operation(summary = "Registra o pagamento de um jogador")
-    public ResponseEntity payPlayer(@RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<Void> payPlayer(@RequestBody PaymentDTO paymentDTO) {
         paymentService.payPlayer(paymentDTO);
         return ResponseEntity.ok().build();
     }
