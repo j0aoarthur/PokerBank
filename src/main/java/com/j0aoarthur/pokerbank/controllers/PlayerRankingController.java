@@ -3,6 +3,8 @@ package com.j0aoarthur.pokerbank.controllers;
 import com.j0aoarthur.pokerbank.DTOs.response.PlayerRankingDTO;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
 import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,12 +17,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/ranking")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@Tag(name = "Player Ranking Controller", description = "Endpoints para gerenciar o ranking dos jogadores")
 public class PlayerRankingController {
 
     @Autowired
     private PlayerRankingService playerRankingService;
 
     @GetMapping
+    @Operation(summary = "Retorna o ranking completo dos jogadores")
     public ResponseEntity<List<PlayerRankingDTO>> getRanking() {
         List<PlayerRanking> ranking = playerRankingService.getPlayerRankings();
 
@@ -28,6 +32,7 @@ public class PlayerRankingController {
     }
 
     @GetMapping("/top")
+    @Operation(summary = "Retorna os 3 melhores jogadores do ranking")
     public ResponseEntity<List<PlayerRankingDTO>> getTopPlayers() {
         List<PlayerRanking> topPlayers = playerRankingService.getTopPlayers();
         return ResponseEntity.ok(topPlayers.stream().map(PlayerRankingDTO::new).toList());
