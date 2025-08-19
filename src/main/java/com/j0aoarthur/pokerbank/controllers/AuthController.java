@@ -15,10 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,7 +34,7 @@ public class AuthController {
     @Operation(summary = "Realiza o cadastro de um novo usuário")
     public ResponseEntity register(@RequestBody @Valid AuthRequestDTO authRequestDTO) {
         authService.createUser(authRequestDTO);
-        return ResponseEntity.status(201).body("Usuário registrado com sucesso!");
+        return ResponseEntity.status(201).body("Usuário registrado com sucesso! Verifique seu e-mail para ativar sua conta.");
     }
 
     @PostMapping("/login")
@@ -55,5 +52,15 @@ public class AuthController {
         String jwt = tokenService.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthResponse(jwt, userDetails.getUsername()));
+    }
+
+    @GetMapping("/verify")
+    @Operation(summary = "Verifica o e-mail do usuário usando o token de verificação")
+    public ResponseEntity<String> verifyEmail(@RequestParam String token) {
+        if (authService.verifyUserEmail(token)) {
+            return ResponseEntity.ok("E-mail verificado com sucesso!");
+        } else {
+            return ResponseEntity.status(400).body("Token de verificação inválido ou expirado.");
+        }
     }
 }
