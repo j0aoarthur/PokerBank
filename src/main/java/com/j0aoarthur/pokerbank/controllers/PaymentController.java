@@ -8,6 +8,7 @@ import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.services.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/payment")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "Payment Controller", description = "Endpoints para gerenciar pagamentos e sugestões de pagamento")
+@SecurityRequirement(name = "bearerAuth")
 public class PaymentController {
 
     @Autowired

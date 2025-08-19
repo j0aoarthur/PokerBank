@@ -4,6 +4,7 @@ import com.j0aoarthur.pokerbank.DTOs.response.PlayerRankingDTO;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
 import com.j0aoarthur.pokerbank.services.PlayerRankingService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/ranking")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "Player Ranking Controller", description = "Endpoints para gerenciar o ranking dos jogadores")
+@SecurityRequirement(name = "bearerAuth")
 public class PlayerRankingController {
 
     @Autowired

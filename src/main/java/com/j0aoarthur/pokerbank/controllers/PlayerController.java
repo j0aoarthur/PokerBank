@@ -5,6 +5,7 @@ import com.j0aoarthur.pokerbank.DTOs.response.PlayerDTO;
 import com.j0aoarthur.pokerbank.entities.Player;
 import com.j0aoarthur.pokerbank.services.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/players")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "Player Controller", description = "Endpoints para gerenciar jogadores")
+@SecurityRequirement(name = "bearerAuth")
 public class PlayerController {
 
     @Autowired
