@@ -29,6 +29,9 @@ public class User {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @Column(name = "verification_token")
+    private String verificationToken;
+
     public User(AuthRequestDTO authRequestDTO, String encodedPassword) {
         this.username = authRequestDTO.username();
         this.password = encodedPassword;
