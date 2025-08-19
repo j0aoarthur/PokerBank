@@ -1,6 +1,7 @@
 package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.AuthRequestDTO;
+import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,8 @@ public class AuthService implements UserDetailsService {
         var encodedPassword = passwordEncoder.encode(authRequestDTO.password());
         User user = new User(authRequestDTO, encodedPassword);
 
-        // Gerar token de verificação único
-        // Implementar depois uma lógica para tempo de expiração do token
-        user.setVerificationToken(randomUUID().toString());
+        // Gerar token de verificação único (24 horas de validade)
+        user.generateVerificationToken();
 
         // Enviar e-mail de verificação (Mudar o link para o seu domínio real em produção)
         String verificationLink = "http://localhost:8080/auth/verify?token=" + user.getVerificationToken();
@@ -55,7 +55,11 @@ public class AuthService implements UserDetailsService {
 
     public boolean verifyUserEmail(String token) {
         User user = userRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new RuntimeException("Token de verificação inválido ou expirado"));
+                .orElseThrow(() -> new RuntimeException("Token de verificação inválido"));
+
+        if (user.getVerificationTokenExpiration() < System.currentTimeMillis()) {
+            throw new RuntimeException("Token de verificação expirado");
+        }
 
         if (user.getIsVerified()) {
             return false;
@@ -63,7 +67,40 @@ public class AuthService implements UserDetailsService {
 
         user.setIsVerified(true);
         user.setVerificationToken(null);
+        user.setVerificationTokenExpiration(null);
         userRepository.save(user);
         return true;
+    }
+
+    public void requestPasswordReset(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o e-mail: " + email));
+
+        // Gerar token de redefinição de senha (15 minutos de validade)
+        user.generateResetToken();
+
+        // Enviar e-mail com o link de redefinição de senha
+        String resetLink = "http://localhost:8080/auth/reset-password?token=" + user.getResetToken();
+        try {
+            emailService.sendResetEmail(user.getEmail(), user.getUsername(), resetLink);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao enviar e-mail de redefinição de senha: " + e.getMessage());
+        }
+
+        userRepository.save(user);
+    }
+
+    public void resetPassword(NewPasswordDTO newPasswordDTO) {
+        User user = userRepository.findByResetToken(newPasswordDTO.passwordToken())
+                .orElseThrow(() -> new RuntimeException("Token de redefinição de senha inválido"));
+
+        if (user.getResetTokenExpiration() < System.currentTimeMillis()) {
+            throw new RuntimeException("Token de redefinição de senha expirado");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPasswordDTO.newPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiration(null);
+        userRepository.save(user);
     }
 }

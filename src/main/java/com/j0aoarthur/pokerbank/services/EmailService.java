@@ -39,4 +39,25 @@ public class EmailService {
     }
 
 
+    public void sendResetEmail(String to, String name, String resetLink) throws MessagingException {
+        // 1. Cria o contexto com as variáveis para o template
+        Context context = new Context();
+        context.setVariable("nome_usuario", name);
+        context.setVariable("link_de_redefinicao", resetLink);
+        context.setVariable("ano", Calendar.getInstance().get(Calendar.YEAR)); // Pega o ano atual
+
+        // 2. Processa o template HTML com as variáveis
+        // Note que agora usamos o nome do novo arquivo: "redefinicao-senha"
+        String htmlContent = templateEngine.process("reset-senha", context);
+
+        // 3. Envia o e-mail
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject("Solicitação de Redefinição de Senha");
+        helper.setText(htmlContent, true);
+
+        mailSender.send(mimeMessage);
+    }
 }
