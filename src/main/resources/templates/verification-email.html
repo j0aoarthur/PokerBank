@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Confirmação de E-mail</title>
+</head>
+<body style="margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; background-color: #f4f4f4;">
+
+<div style="width: 100%; background-color: #f4f4f4; padding: 20px 0;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+
+        <div style="background-color: #007bff; color: #ffffff; padding: 20px 30px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">Quase lá! Confirme seu e-mail</h1>
+        </div>
+
+        <div style="padding: 30px 40px; color: #333333; line-height: 1.6;">
+            <h2 style="margin-top: 0; color: #333333;" th:text="'Olá, ' + ${nome_usuario} + '!'">Olá, Usuário!</h2>
+
+            <p>Obrigado por se registrar no <strong>PokerBank</strong>. Para ativar sua conta e começar a usar nossos serviços, por favor, clique no botão abaixo para verificar seu endereço de e-mail.</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a th:href="${link_de_verificacao}" target="_blank" style="background-color: #28a745; color: #ffffff; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">
+                    Verificar Meu E-mail
+                </a>
+            </div>
+
+            <p>Se o botão não funcionar, copie e cole o seguinte link no seu navegador:</p>
+            <p style="word-break: break-all; font-size: 12px; color: #666666;">
+                <a th:href="${link_de_verificacao}" th:text="${link_de_verificacao}" target="_blank" style="color: #007bff;">http://pkrbank.site/verificar</a>
+            </p>
+
+            <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
+
+            <p style="font-size: 14px; color: #555555;">Se você não criou esta conta, pode ignorar este e-mail com segurança. Nenhuma ação será tomada.</p>
+        </div>
+
+        <div style="background-color: #f9f9f9; color: #888888; padding: 20px 30px; text-align: center; font-size: 12px;">
+            <p style="margin: 0;" th:text="'© ' + ${ano} + ' ' + 'PokerBank. Todos os direitos reservados.'">© 2025 PokerBank. Todos os direitos reservados.</p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

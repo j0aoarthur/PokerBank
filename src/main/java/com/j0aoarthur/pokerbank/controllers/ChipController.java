@@ -5,6 +5,7 @@ import com.j0aoarthur.pokerbank.DTOs.response.ChipDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.services.ChipService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/chips")
 @Tag(name = "Chip Controller", description = "Endpoints para gerenciar as fichas")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@SecurityRequirement(name = "bearerAuth")
 public class ChipController {
 
     @Autowired
