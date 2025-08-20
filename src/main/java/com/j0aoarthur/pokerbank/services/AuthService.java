@@ -76,6 +76,11 @@ public class AuthService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o e-mail: " + email));
 
+        // Verifica se o usuário pediu esse e-mail recentemente e está pedindo de novo em menos de 5 minutos
+        if (user.getResetTokenExpiration() != null && user.getResetTokenExpiration() > System.currentTimeMillis() - 5 * 60 * 1000) {
+            throw new RuntimeException("Você já solicitou uma redefinição de senha recentemente. Espere alguns minutos antes de tentar novamente.");
+        }
+
         // Gerar token de redefinição de senha (15 minutos de validade)
         user.generateResetToken();
 
