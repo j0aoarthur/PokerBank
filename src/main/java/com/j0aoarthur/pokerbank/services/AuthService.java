@@ -5,6 +5,7 @@ import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 import static java.util.UUID.randomUUID;
 
-@Service
+@Serviceı
 public class AuthService implements UserDetailsService {
 
     @Autowired
@@ -26,6 +27,9 @@ public class AuthService implements UserDetailsService {
 
     @Autowired
     private EmailService emailService;
+
+    @Value("${app.baseurl}")
+    private String appBaseurl;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -43,7 +47,7 @@ public class AuthService implements UserDetailsService {
         user.generateVerificationToken();
 
         // Enviar e-mail de verificação (Mudar o link para o seu domínio real em produção)
-        String verificationLink = "http://localhost:8080/auth/verify?token=" + user.getVerificationToken();
+        String verificationLink = appBaseurl + "/auth/verify?token=" + user.getVerificationToken();
         try {
             emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), verificationLink);
         } catch (Exception e) {
@@ -85,7 +89,7 @@ public class AuthService implements UserDetailsService {
         user.generateResetToken();
 
         // Enviar e-mail com o link de redefinição de senha
-        String resetLink = "http://localhost:8080/auth/reset-password?token=" + user.getResetToken();
+        String resetLink = appBaseurl + "/auth/reset-password?token=" + user.getResetToken();
         try {
             emailService.sendResetEmail(user.getEmail(), user.getUsername(), resetLink);
         } catch (Exception e) {
