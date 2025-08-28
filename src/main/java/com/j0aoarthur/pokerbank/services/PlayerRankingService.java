@@ -2,10 +2,9 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
-import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.PlayerRankingRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,13 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerRankingService {
 
-    @Autowired
-    private GamePlayerService gamePlayerService;
-
-    @Autowired
-    private PlayerRankingRepository playerRankingRepository;
+    private final PlayerRankingRepository playerRankingRepository;
+    private final AuthContextService authContextService;
 
     @Transactional
     public void updatePlayerRanking(Long playerId) {

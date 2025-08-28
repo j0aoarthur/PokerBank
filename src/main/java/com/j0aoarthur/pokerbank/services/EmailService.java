@@ -2,7 +2,7 @@ package com.j0aoarthur.pokerbank.services;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -12,13 +12,11 @@ import org.thymeleaf.context.Context;
 import java.util.Calendar;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
-    private TemplateEngine templateEngine;
+    private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
     public void sendVerificationEmail(String to, String name, String verificationLink) throws MessagingException {
         Context context = new Context();

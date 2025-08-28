@@ -8,32 +8,22 @@ import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
 import com.j0aoarthur.pokerbank.repositories.GamePlayerRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GamePlayerService {
 
-    @Autowired
-    private GameService gameService;
-
-    @Autowired
-    private PlayerService playerService;
-
-    @Autowired
-    private ChipService chipService;
-
-    @Autowired
-    private PlayerRankingService playerRankingService;
-
-    @Autowired
-    private GamePlayerRepository gamePlayerRepository;
-
-    @Autowired
-    private ChipCountRepository chipCountRepository;
+    private final GameService gameService;
+    private final PlayerService playerService;
+    private final ChipService chipService;
+    private final PlayerRankingService playerRankingService;
+    private final GamePlayerRepository gamePlayerRepository;
+    private final ChipCountRepository chipCountRepository;
 
     @Transactional
     public GamePlayer addPlayerToGame(GamePlayerRequestDTO dto) {

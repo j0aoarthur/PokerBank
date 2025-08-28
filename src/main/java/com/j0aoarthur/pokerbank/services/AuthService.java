@@ -2,9 +2,16 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.AuthRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
+import com.j0aoarthur.pokerbank.DTOs.response.AuthResponse;
+import com.j0aoarthur.pokerbank.entities.Role;
 import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.infra.security.CustomUserDetails;
+import com.j0aoarthur.pokerbank.infra.security.TokenService;
 import com.j0aoarthur.pokerbank.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,21 +19,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
-import static java.util.UUID.randomUUID;
-
-@Serviceı
+@Service
+@RequiredArgsConstructor
 public class AuthService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    @Autowired
-    private EmailService emailService;
+    private final EmailService emailService;
+    private final AuthContextService authContextService;
+    private final ClubMembershipService clubMembershipService;
 
     @Value("${app.baseurl}")
     private String appBaseurl;

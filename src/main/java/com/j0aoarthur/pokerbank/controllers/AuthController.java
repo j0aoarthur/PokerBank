@@ -9,7 +9,7 @@ import com.j0aoarthur.pokerbank.infra.security.TokenService;
 import com.j0aoarthur.pokerbank.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,16 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private TokenService tokenService;
+    private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
 
     @PostMapping("/register")
     @Operation(summary = "Realiza o cadastro de um novo usuário")

@@ -7,7 +7,7 @@ import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,16 +17,14 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GameService {
 
-    @Autowired
-    private GameRepository gameRepository;
-
-    @Autowired
-    private GamePlayerService gamePlayerService;
-
-    @Autowired
-    private PlayerRankingService playerRankingService;
+    private final GameRepository gameRepository;
+    private final GamePlayerService gamePlayerService;
+    private final PlayerRankingService playerRankingService;
+    private final AuthContextService authContextService;
+    private final ClubService clubService;
 
     @Transactional
     public Game createGame(GameRequestDTO dto) {
