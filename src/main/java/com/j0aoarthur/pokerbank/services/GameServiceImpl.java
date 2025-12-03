@@ -2,14 +2,20 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
+import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
+import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
+import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
+import com.j0aoarthur.pokerbank.interfaces.GameService;
+import com.j0aoarthur.pokerbank.interfaces.PlayerRankingService;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,27 +24,31 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GameService {
+public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
     private final GamePlayerService gamePlayerService;
     private final PlayerRankingService playerRankingService;
-    private final AuthContextService authContextService;
-    private final ClubService clubService;
+    private final AuthContextServiceImpl authContextService;
 
+    @Override
     @Transactional
-    public Game createGame(GameRequestDTO dto) {
-        Game game = new Game();
-        game.setDate(dto.date());
-        game.setDueDate(game.getDate().plusWeeks(1));
+    public Game createGame(GameRequestDTO gameRequestDTO) {
+        Club currentClub = authContextService.getCurrentClub();
+        Game game = new Game(gameRequestDTO, currentClub);
         return gameRepository.save(game);
     }
 
+    @Override
     @Transactional
     public void deleteGame(Long id) {
         Game game = this.getGameById(id);
         if (game.getIsFinished()) {
-            throw new IllegalStateException("Não é possível excluir uma partida já finalizada.");
+            throw new IllegalArgumentException("Não é possível excluir uma partida já finalizada.");
+        }
+
+        if (!game.getClub().equals(authContextService.getCurrentClub())) {
+            throw new AccessDeniedException("Você não tem permissão para excluir esta partida.");
         }
 
         // Obter todos os jogadores da partida antes de excluir a partida
@@ -47,32 +57,30 @@ public class GameService {
         gameRepository.delete(game);
 
         // Atualizar o ranking dos jogadores da partida
-        gamePlayers.forEach(gamePlayer -> {
-            playerRankingService.updatePlayerRanking(gamePlayer.getPlayer().getId());
-        });
-    }
-
-    // Buscar partida por ID
-    public Game getGameById(Long id) {
-        return gameRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada com o ID: " + id));
+        for (GamePlayer gamePlayer : gamePlayers) {
+            playerRankingService.updatePlayerRanking(gamePlayer);
+        }
     }
 
     // Listar todas as partidas com paginação
-    public Page<Game> getAllGames(Pageable pageable) {
+    @Override
+    public Page<Game> getGames(Pageable pageable) {
         return gameRepository.findAll(pageable);
     }
 
     // Listar todas as partidas
+    @Override
     public List<Game> getAllGames() {
         return gameRepository.findAll().stream().sorted(Comparator.comparing(Game::getDate).reversed()).toList();
     }
 
+    @Override
     public List<Game> getLatestGames() {
         return gameRepository.findTop3ByOrderByDateDesc();
     }
 
-    public GameInfoDTO getGameInfo(Long id) {
+    @Override
+    public GameInfoDTO getGameInfoById(Long id) {
         Game game = this.getGameById(id);
 
         List<GamePlayer> gamePlayersWithBalance = gamePlayerService.getGamePlayersByGame(id);
@@ -109,10 +117,9 @@ public class GameService {
                 game.getIsFinished(),
                 observation
         );
-
-
     }
 
+    @Override
     @Transactional
     public void checkGameFinished(Long gameId) {
         Game game = this.getGameById(gameId);
@@ -128,6 +135,12 @@ public class GameService {
             game.setIsFinished(true);
             gameRepository.save(game);
         }
+    }
+
+    // Buscar partida por ID
+    private Game getGameById(Long id) {
+        return gameRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada com o ID: " + id));
     }
 }
 

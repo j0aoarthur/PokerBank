@@ -4,12 +4,14 @@ import com.j0aoarthur.pokerbank.DTOs.request.PaymentDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.entities.PaymentSituation;
+import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.validators.PaymentValidator;
+import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
+import com.j0aoarthur.pokerbank.interfaces.GameService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,23 +21,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
-    @Autowired
-    private GamePlayerService gamePlayerService;
-
-    @Autowired
-    private GameService gameService;
-
-    @Autowired
-    private PaymentValidator paymentValidator;
+    private final GamePlayerService gamePlayerService;
+    private final GameService gameService;
+    private final PaymentValidator paymentValidator;
 
     // Classe auxiliar interna para a lógica de sugestão de pagamento
     @Data
     @AllArgsConstructor
-    private static class PlayerPaymentData {
-        private Long playerId;
-        private String playerName;
+    private static class ClubMemberPaymentData {
+        private Long clubMemberId;
+        private String clubMemberName;
         private BigDecimal pendingAmount;
     }
 
@@ -50,29 +48,29 @@ public class PaymentService {
                 .filter(gp -> !gp.getPaid() && gp.getPendingAmount().compareTo(BigDecimal.ZERO) > 0)
                 .toList();
 
-        List<PlayerPaymentData> payersData = gamePayers.stream()
-                .map(gp -> new PlayerPaymentData(
-                        gp.getPlayer().getId(),
-                        gp.getPlayer().getName(),
+        List<ClubMemberPaymentData> payersData = gamePayers.stream()
+                .map(gp -> new ClubMemberPaymentData(
+                        gp.getClubMember().getId(),
+                        gp.getClubMember().getName(),
                         gp.getPendingAmount()
                 ))
-                .sorted(Comparator.comparing(PlayerPaymentData::getPendingAmount).reversed())
+                .sorted(Comparator.comparing(ClubMemberPaymentData::getPendingAmount).reversed())
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        List<PlayerPaymentData> receiversData = gameReceivers.stream()
-                .map(gp -> new PlayerPaymentData(
-                        gp.getPlayer().getId(),
-                        gp.getPlayer().getName(),
+        List<ClubMemberPaymentData> receiversData = gameReceivers.stream()
+                .map(gp -> new ClubMemberPaymentData(
+                        gp.getClubMember().getId(),
+                        gp.getClubMember().getName(),
                         gp.getPendingAmount()
                 ))
-                .sorted(Comparator.comparing(PlayerPaymentData::getPendingAmount).reversed())
+                .sorted(Comparator.comparing(ClubMemberPaymentData::getPendingAmount).reversed())
                 .collect(Collectors.toCollection(ArrayList::new));
 
         List<PaymentSuggestionDTO> suggestions = new ArrayList<>();
 
         while (!payersData.isEmpty() && !receiversData.isEmpty()) {
-            PlayerPaymentData currentPayer = payersData.get(0);
-            PlayerPaymentData currentReceiver = receiversData.get(0);
+            ClubMemberPaymentData currentPayer = payersData.get(0);
+            ClubMemberPaymentData currentReceiver = receiversData.get(0);
 
             BigDecimal payerDebt = currentPayer.getPendingAmount();
             BigDecimal receiverCredit = currentReceiver.getPendingAmount();
@@ -81,10 +79,10 @@ public class PaymentService {
 
             if (amountToTransfer.compareTo(BigDecimal.ZERO) > 0) {
                 suggestions.add(new PaymentSuggestionDTO(
-                        currentPayer.getPlayerId(),
-                        currentPayer.getPlayerName(),
-                        currentReceiver.getPlayerId(),
-                        currentReceiver.getPlayerName(),
+                        currentPayer.getClubMemberId(),
+                        currentPayer.getClubMemberName(),
+                        currentReceiver.getClubMemberId(),
+                        currentReceiver.getClubMemberName(),
                         amountToTransfer
                 ));
 
@@ -100,8 +98,8 @@ public class PaymentService {
                 receiversData.remove(0);
             }
 
-            payersData.sort(Comparator.comparing(PlayerPaymentData::getPendingAmount).reversed());
-            receiversData.sort(Comparator.comparing(PlayerPaymentData::getPendingAmount).reversed());
+            payersData.sort(Comparator.comparing(ClubMemberPaymentData::getPendingAmount).reversed());
+            receiversData.sort(Comparator.comparing(ClubMemberPaymentData::getPendingAmount).reversed());
         }
         return suggestions;
     }
@@ -133,9 +131,9 @@ public class PaymentService {
         gameService.checkGameFinished(payerGamePlayer.getGame().getId());
     }
 
-    public List<PaymentSuggestionDTO> getPaymentSuggestionsByPlayer(Long gameId, Long playerId) {
+    public List<PaymentSuggestionDTO> getPaymentSuggestionsByClubMember(Long gameId, Long clubMemberId) {
         return this.getPaymentSuggestion(gameId)
-                .stream().filter(payment -> payment.payerId().equals(playerId)).toList();
+                .stream().filter(payment -> payment.payerId().equals(clubMemberId)).toList();
     }
 
     public List<Game> getExpiredGames() {
@@ -147,9 +145,9 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
-    public List<GamePlayer> getExpiredPaymentsByPlayer(Long playerId) {
+    public List<GamePlayer> getExpiredPaymentsByClubMember(Long clubMemberId) {
         List<Game> expiredGames = this.getExpiredGames();
-        List<GamePlayer> gamesByPlayer = gamePlayerService.getGamesByPlayer(playerId);
+        List<GamePlayer> gamesByPlayer = gamePlayerService.getGamePlayersByPlayer(clubMemberId);
         return gamesByPlayer.stream()
                 .filter(gamePlayer -> expiredGames.stream()
                         .anyMatch(game -> game.getId().equals(gamePlayer.getGame().getId()) && !gamePlayer.getPaid()))

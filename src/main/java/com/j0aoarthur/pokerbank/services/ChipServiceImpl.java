@@ -2,33 +2,41 @@ package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
+import com.j0aoarthur.pokerbank.entities.Club;
+import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
+import com.j0aoarthur.pokerbank.interfaces.ChipService;
 import com.j0aoarthur.pokerbank.repositories.ChipRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class ChipService {
+@RequiredArgsConstructor
+public class ChipServiceImpl implements ChipService {
 
-    @Autowired
-    private ChipRepository chipRepository;
+    private final ChipRepository chipRepository;
+    private final AuthContextServiceImpl authContextService;
 
+    @Override
     @Transactional
     public Chip createChip(ChipRequestDTO dto) {
-        Chip chip = new Chip(dto);
+        Club club = authContextService.getCurrentClub();
+        Chip chip = new Chip(dto, club);
         return chipRepository.save(chip);
     }
 
 
+    @Override
     public List<Chip> getAllChips() {
         return chipRepository.findAll().stream().sorted(Comparator.comparing(Chip::getValue)).toList();
     }
 
 
+    @Override
     public Chip getChipById(Long id) {
         return chipRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ficha não encontrada com ID: " + id));
