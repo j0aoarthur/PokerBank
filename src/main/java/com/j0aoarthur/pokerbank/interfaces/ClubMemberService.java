@@ -5,6 +5,7 @@ import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.ClubMember;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClubMemberService {
     ClubMember createClubMember(ClubMemberRequestDTO clubMemberDTO, Club club);
@@ -12,4 +13,7 @@ public interface ClubMemberService {
     ClubMember getClubMemberById(Long id);
     List<ClubMember> getAllClubMembers();
     List<ClubMember> getClubMembersNotInGame(Long gameId);
+    Optional<ClubMember> getMemberByUserAndClub(Long userId, Long clubId);
+    List<Club> getClubsByUserId(Long userId);
+    ClubMember getClubMemberByUserId(Long userId);
 }
