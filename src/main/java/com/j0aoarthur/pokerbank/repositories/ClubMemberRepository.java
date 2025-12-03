@@ -10,8 +10,12 @@ import java.util.Optional;
 
 public interface ClubMemberRepository extends JpaRepository<ClubMember, Long> {
 
-    @Query("SELECT p FROM ClubMember cm WHERE cm.id NOT IN (SELECT gp.clubMember.id FROM GamePlayer gp WHERE gp.game.id = :gameId) ORDER BY cm.name")
+    @Query("SELECT cm FROM ClubMember cm WHERE cm.id NOT IN (SELECT gp.clubMember.id FROM GamePlayer gp WHERE gp.game.id = :gameId) ORDER BY cm.name")
     List<ClubMember> findClubMembersNotInGameOrderByName(@Param("gameId") Long gameId);
 
     Optional<ClubMember> findByUserId(Long userId);
+
+    List<ClubMember> findAllByUserId(Long userId);
+
+    Optional<ClubMember> findByUserIdAndClubId(Long userId, Long clubId);
 }

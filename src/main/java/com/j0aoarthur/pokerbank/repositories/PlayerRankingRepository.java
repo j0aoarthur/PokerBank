@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerRankingRepository extends JpaRepository<PlayerRanking, Long> {
-    Optional<PlayerRanking> findByPlayerId(Long playerId);
+    Optional<PlayerRanking> findByClubMemberId(Long clubMemberId);
 
     List<PlayerRanking> findAllByGamesPlayedAfterOrderByNetBalanceDesc(Integer gamesPlayedAfter);
 }
