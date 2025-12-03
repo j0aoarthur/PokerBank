@@ -17,6 +17,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -29,21 +31,21 @@ public class User {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
-    @Column(name = "verification_token")
+    @Column(name = "verification_token", unique = true)
     private String verificationToken;
 
     @Column(name = "verification_token_expiration")
     private Long verificationTokenExpiration;
 
-    @Column(name = "reset_token")
+    @Column(name = "reset_token", unique = true)
     private String resetToken;
 
     @Column(name = "reset_token_expiration")
     private Long resetTokenExpiration;
 
 
-
     public User(AuthRequestDTO authRequestDTO, String encodedPassword) {
+        this.name = authRequestDTO.name();
         this.username = authRequestDTO.username();
         this.password = encodedPassword;
         this.email = authRequestDTO.email();

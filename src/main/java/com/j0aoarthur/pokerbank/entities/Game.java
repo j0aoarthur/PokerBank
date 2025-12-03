@@ -1,8 +1,11 @@
 package com.j0aoarthur.pokerbank.entities;
 
+import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,7 +15,12 @@ import java.util.List;
 @Table(name = "games")
 @Getter
 @Setter
-public class Game {
+@NoArgsConstructor
+public class Game extends BaseTenantEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id", insertable = false, updatable = false)
+    private Club club;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +34,13 @@ public class Game {
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GamePlayer> players = new ArrayList<>();
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
+
+    public Game(GameRequestDTO gameRequestDTO, Club currentClub) {
+        this.setDate(gameRequestDTO.date());
+        this.setDueDate(gameRequestDTO.date().plusWeeks(1));
+    }
 }
 

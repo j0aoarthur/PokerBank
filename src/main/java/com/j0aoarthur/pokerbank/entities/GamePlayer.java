@@ -1,10 +1,12 @@
 package com.j0aoarthur.pokerbank.entities;
 
 import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,19 +18,23 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Getter
-public class GamePlayer {
+public class GamePlayer extends BaseTenantEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_id", insertable = false, updatable = false)
+    private Club club;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "player_id")
-    private Player player;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_member_id")
+    private ClubMember clubMember;
 
     @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ChipCount> chipCounts = new ArrayList<>();
@@ -36,29 +42,28 @@ public class GamePlayer {
     private BigDecimal initialCash;
 
     // Representa o resultado financeiro do jogador no jogo (lucro/prejuízo).
-    // Ex: +100.00 se ganhou, -50.00 se perdeu.
     // Este valor NÃO será alterado pelas operações de pagamento.
     private BigDecimal balance;
 
     // Novo campo: Valor já pago (se 'balance' < 0) ou já recebido (se 'balance' > 0).
-    // Inicializado como BigDecimal.ZERO.
     private BigDecimal settledAmount = BigDecimal.ZERO;
 
     private Boolean paid = false; // True se settledAmount cobre totalmente o 'balance'.
 
     @Enumerated(EnumType.STRING)
-    private PaymentSituation paymentSituation; // PAY, RECEIVE, ou talvez NEUTRAL/SETTLED
+    private PaymentSituation paymentSituation; // PAY, RECEIVE, ou NONE
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public GamePlayer(GamePlayerRequestDTO dto, Game game, Player player) {
+    public GamePlayer(GamePlayerRequestDTO dto, Game game, ClubMember clubMember) {
+        this.setClub(clubMember.getClub());
         this.setInitialCash(dto.initialCash());
         this.setBalance(BigDecimal.ZERO);
         this.setSettledAmount(BigDecimal.ZERO);
         this.setPaid(false);
         this.setGame(game);
-        this.setPlayer(player);
+        this.setClubMember(clubMember);
     }
 
     /**
