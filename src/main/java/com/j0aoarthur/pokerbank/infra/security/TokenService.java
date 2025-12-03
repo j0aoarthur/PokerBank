@@ -23,7 +23,7 @@ import java.util.function.Function;
 @Service
 public class TokenService {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret.password}")
     private String secret;
 
     @Value("${jwt.expiration}")
