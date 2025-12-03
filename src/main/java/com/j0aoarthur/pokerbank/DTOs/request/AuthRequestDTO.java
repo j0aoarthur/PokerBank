@@ -4,6 +4,9 @@ import jakarta.validation.constraints.*;
 
 public record AuthRequestDTO(
 
+        @NotBlank(message = "Nome é obrigatório")
+        String name,
+
         @NotBlank(message = "Nome de usuário é obrigatório")
         String username,
 

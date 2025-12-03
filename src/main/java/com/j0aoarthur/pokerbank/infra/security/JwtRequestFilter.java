@@ -1,6 +1,10 @@
 package com.j0aoarthur.pokerbank.infra.security;
 
-import com.j0aoarthur.pokerbank.services.AuthService;
+import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.enums.Role;
+import com.j0aoarthur.pokerbank.infra.context.ClubContext;
+import com.j0aoarthur.pokerbank.repositories.UserRepository;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,24 +29,42 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = tokenService.extractUsername(jwt);
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.authService.loadUserByUsername(username);
+        final String jwt = authorizationHeader.substring(7);
 
+        try {
+            if (tokenService.validateToken(jwt)) {
+                String username = tokenService.extractUsername(jwt);
 
-            if (tokenService.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado com o username: " + username));
+
+                Claims claims = tokenService.extractAllClaims(jwt);
+
+                Long clubId = claims.get("clubId", Long.class);
+                Role role = claims.get("role", String.class) != null ? Role.valueOf(claims.get("role", String.class)) : null;
+
+                UserDetails userDetails = new CustomUserDetails(user, role);
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                if (clubId != null ) {
+                    ClubContext.setCurrentClubId(clubId);
+                }
             }
+        } finally {
+            filterChain.doFilter(request, response);
+            ClubContext.clear();
         }
-        filterChain.doFilter(request, response);
     }
 }

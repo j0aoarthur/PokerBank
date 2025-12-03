@@ -4,9 +4,9 @@ package com.j0aoarthur.pokerbank.controllers;
 import com.j0aoarthur.pokerbank.DTOs.request.AuthRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.LoginRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
+import com.j0aoarthur.pokerbank.DTOs.request.RefreshTokenRequestDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.AuthResponse;
-import com.j0aoarthur.pokerbank.infra.security.TokenService;
-import com.j0aoarthur.pokerbank.services.AuthService;
+import com.j0aoarthur.pokerbank.interfaces.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,10 +42,9 @@ public class AuthController {
             return ResponseEntity.status(401).body("Credenciais inválidas");
         }
 
-        UserDetails userDetails = authService.loadUserByUsername(loginRequestDTO.username());
-        String jwt = tokenService.generateToken(userDetails);
+        AuthResponse tokens = authService.generateTokens(loginRequestDTO.username());
 
-        return ResponseEntity.ok(new AuthResponse(jwt, userDetails.getUsername()));
+        return ResponseEntity.ok(tokens);
     }
 
     @GetMapping("/verify")
@@ -79,5 +77,34 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Erro ao redefinir senha: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/select-club/{clubId}")
+    @Operation(summary = "Seleciona um clube para o usuário")
+    public ResponseEntity<?> selectClub(@PathVariable Long clubId) {
+        try {
+            AuthResponse tokens = authService.selectClub(clubId);
+            return ResponseEntity.ok(tokens);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Erro ao selecionar clube: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/refresh-token")
+    @Operation(summary = "Gera um novo token de acesso usando o token de refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO request) {
+        try {
+            AuthResponse tokens = authService.refreshTokens(request.refreshToken());
+            return ResponseEntity.ok(tokens);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Realiza o logout do usuário invalidando o token de refresh")
+    public ResponseEntity<String> logout(@RequestBody RefreshTokenRequestDTO request) {
+        authService.logout(request.refreshToken());
+        return ResponseEntity.ok("Logout realizado com sucesso.");
     }
 }
