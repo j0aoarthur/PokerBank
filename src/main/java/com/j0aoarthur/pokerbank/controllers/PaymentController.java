@@ -6,11 +6,12 @@ import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerDTO;
 import com.j0aoarthur.pokerbank.DTOs.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
+import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
 import com.j0aoarthur.pokerbank.services.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +22,11 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "Payment Controller", description = "Endpoints para gerenciar pagamentos e sugestões de pagamento")
 @SecurityRequirement(name = "bearerAuth")
+@RequiresClubContext
+@RequiredArgsConstructor
 public class PaymentController {
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
     @GetMapping("/suggestion/{gameId}")
     @Operation(summary = "Retorna sugestões de pagamento para uma partida específica")
@@ -40,10 +42,10 @@ public class PaymentController {
         return ResponseEntity.ok(expiredGames.stream().map(GameDTO::new).toList());
     }
 
-    @GetMapping("/expired-payments/{playerId}")
+    @GetMapping("/expired-payments/{clubMemberId}")
     @Operation(summary = "Retorna todos os pagamentos expirados de um jogador específico")
-    public ResponseEntity<List<GamePlayerDTO>> getExpiredPaymentsOfPlayer(@PathVariable Long playerId) {
-        List<GamePlayer> expiredPayments = paymentService.getExpiredPaymentsByPlayer(playerId);
+    public ResponseEntity<List<GamePlayerDTO>> getExpiredPaymentsOfPlayer(@PathVariable Long clubMemberId) {
+        List<GamePlayer> expiredPayments = paymentService.getExpiredPaymentsByClubMember(clubMemberId);
         return ResponseEntity.ok(expiredPayments.stream().map(GamePlayerDTO::new).toList());
     }
 

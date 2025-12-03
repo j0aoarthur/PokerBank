@@ -2,11 +2,12 @@ package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.DTOs.response.PlayerRankingDTO;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
-import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.interfaces.PlayerRankingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +21,11 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "Player Ranking Controller", description = "Endpoints para gerenciar o ranking dos jogadores")
 @SecurityRequirement(name = "bearerAuth")
+@RequiresClubContext
+@RequiredArgsConstructor
 public class PlayerRankingController {
 
-    @Autowired
-    private PlayerRankingService playerRankingService;
+    private final PlayerRankingService playerRankingService;
 
     @GetMapping
     @Operation(summary = "Retorna o ranking completo dos jogadores")

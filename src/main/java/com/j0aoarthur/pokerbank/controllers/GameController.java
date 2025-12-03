@@ -7,13 +7,14 @@ import com.j0aoarthur.pokerbank.DTOs.response.*;
 import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.services.GamePlayerService;
-import com.j0aoarthur.pokerbank.services.GameService;
+import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
+import com.j0aoarthur.pokerbank.interfaces.GameService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,13 +29,12 @@ import java.util.List;
 @Tag(name = "Game Controller", description = "Endpoints para gerenciar partidas e jogadores em partidas")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @SecurityRequirement(name = "bearerAuth")
+@RequiresClubContext
+@RequiredArgsConstructor
 public class GameController {
 
-    @Autowired
-    private GameService gameService;
-
-    @Autowired
-    private GamePlayerService gamePlayerService;
+    private final GameService gameService;
+    private final GamePlayerService gamePlayerService;
 
     @PostMapping
     @Operation(summary = "Cria uma nova partida")
@@ -46,19 +46,20 @@ public class GameController {
     @GetMapping
     @Operation(summary = "Retorna todas as partidas com paginação")
     public ResponseEntity<Page<GameDTO>> getAllGames(@PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Game> games = gameService.getAllGames(pageable);
+        Page<Game> games = gameService.getGames(pageable);
         return ResponseEntity.ok(games.map(GameDTO::new));
     }
 
     @GetMapping("/{gameId}")
     @Operation(summary = "Retorna informações detalhadas de uma partida específica")
     public ResponseEntity<GameInfoDTO> getGameInfo(@PathVariable Long gameId) {
-        GameInfoDTO gameInfo = gameService.getGameInfo(gameId);
+        GameInfoDTO gameInfo = gameService.getGameInfoById(gameId);
         return ResponseEntity.ok(gameInfo);
     }
 
     @DeleteMapping("/{gameId}")
     @Operation(summary = "Deleta uma partida específica")
+    // ADMINS PODEM DELETAR PARTIDAS
     public ResponseEntity<Void> deleteGame(@PathVariable Long gameId) {
         gameService.deleteGame(gameId);
         return ResponseEntity.noContent().build();
@@ -78,10 +79,10 @@ public class GameController {
         return ResponseEntity.ok(gamePlayer);
     }
 
-    @PutMapping("/{gameId}/players/{playerId}")
+    @PutMapping("/{gameId}/players/{clubMemberId}")
     @Operation(summary = "Atualiza as informações de um jogador em uma partida")
-    public ResponseEntity<GamePlayer> updateGamePlayer(@PathVariable Long gameId, @PathVariable Long playerId, @RequestBody @Valid UpdateGamePlayerDTO dto) {
-        GamePlayer updatedGamePlayer = gamePlayerService.updateGamePlayer(gameId, playerId, dto);
+    public ResponseEntity<GamePlayer> updateGamePlayer(@PathVariable Long gameId, @PathVariable Long clubMemberId, @RequestBody @Valid UpdateGamePlayerDTO dto) {
+        GamePlayer updatedGamePlayer = gamePlayerService.updateGamePlayer(gameId, clubMemberId, dto);
         return ResponseEntity.ok(updatedGamePlayer);
     }
 
@@ -92,10 +93,10 @@ public class GameController {
         return ResponseEntity.ok(balances.stream().map(GamePlayerBalanceDTO::new).toList());
     }
 
-    @GetMapping("/{gameId}/players/{playerId}")
+    @GetMapping("/{gameId}/players/{clubMemberId}")
     @Operation(summary = "Retorna as informações de um jogador específico em uma partida")
-    public ResponseEntity<GamePlayerInfoDTO> getGamePlayerByGameAndPlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
-        GamePlayer gamePlayer = gamePlayerService.getGamePlayerByGameAndPlayer(gameId, playerId);
+    public ResponseEntity<GamePlayerInfoDTO> getGamePlayerByGameAndPlayer(@PathVariable Long gameId, @PathVariable Long clubMemberId) {
+        GamePlayer gamePlayer = gamePlayerService.getGamePlayer(gameId, clubMemberId);
         List<ChipCount> chipCounts = gamePlayerService.getChipCountsByGamePlayer(gamePlayer.getId());
 
         GamePlayerInfoDTO gamePlayerInfo = new GamePlayerInfoDTO(gamePlayer, chipCounts.stream().map(ChipCountDTO::new).toList());
