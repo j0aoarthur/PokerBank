@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record GamePlayerInfoDTO(
-        Long playerId,
-        String playerName,
+        Long clubMemberId,
+        String clubMemberName,
         BigDecimal initialCash,
         BigDecimal balance,
         BigDecimal pendingAmount,
@@ -16,8 +16,8 @@ public record GamePlayerInfoDTO(
 
     public GamePlayerInfoDTO(GamePlayer gamePlayer, List<ChipCountDTO> chips) {
         this(
-                gamePlayer.getPlayer().getId(),
-                gamePlayer.getPlayer().getName(),
+                gamePlayer.getClubMember().getId(),
+                gamePlayer.getClubMember().getName(),
                 gamePlayer.getInitialCash(),
                 gamePlayer.getBalance(),
                 gamePlayer.getPendingAmount(),

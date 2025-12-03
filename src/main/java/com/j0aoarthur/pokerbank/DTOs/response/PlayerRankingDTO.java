@@ -5,17 +5,17 @@ import com.j0aoarthur.pokerbank.entities.PlayerRanking;
 import java.math.BigDecimal;
 
 public record PlayerRankingDTO(
-        Long playerId,
+        Long clubMemberId,
         Integer rank,
-        String playerName,
+        String clubMemberName,
         int gamesPlayed,
         BigDecimal netBalance
 ) {
     public PlayerRankingDTO(PlayerRanking pr) {
         this(
-                pr.getPlayer().getId(),
+                pr.getClubMember().getId(),
                 pr.getRank(),
-                pr.getPlayer().getName(),
+                pr.getClubMember().getName(),
                 pr.getGamesPlayed(),
                 pr.getNetBalance()
         );

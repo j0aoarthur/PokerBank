@@ -12,7 +12,7 @@ public record GamePlayerRequestDTO(
         Long gameId,
 
         @NotNull(message = "O ID do jogador é obrigatório.")
-        Long playerId,
+        Long clubMemberId,
 
         @NotNull(message = "A banca inicial é obrigatória.")
         @DecimalMin(value = "0.01", message = "A banca inicial deve ser maior que zero.")
