@@ -1,6 +1,3 @@
--- Use the database
-\c pokerbank;
-
 -- Create the 'chips' table
 CREATE TABLE chips (
     id BIGSERIAL PRIMARY KEY,
@@ -40,7 +37,7 @@ CREATE TABLE game_players (
     FOREIGN KEY (player_id) REFERENCES players (id)
 );
 
--- Create the 'game_player_chips' table (to store chip counts for each player in a game)
+-- Create the 'game_player_chips' table (to store chip counts for each clubMember in a game)
 CREATE TABLE chip_counts (
    id BIGSERIAL PRIMARY KEY,
    game_player_id BIGINT NOT NULL,
