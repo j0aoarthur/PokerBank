@@ -54,7 +54,7 @@ Representa um jogo de poker.
 Relaciona um jogador a um jogo, incluindo seu saldo e fichas.
 
 * `gameId` (Long) – ID do jogo
-* `playerId` (Long) – ID do jogador
+* `clubMemberId` (Long) – ID do jogador
 * `balance` (BigDecimal) – Saldo do jogador no jogo
 * `chips` (Lista de `ChipCount`) – Fichas atribuídas ao jogador
 
@@ -122,7 +122,7 @@ Relaciona um jogador a um jogo, incluindo seu saldo e fichas.
   ```json
   {
     "gameId": "long",
-    "playerId": "long",
+    "clubMemberId": "long",
     "balance": "decimal",
     "chips": [
       {
