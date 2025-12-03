@@ -2,7 +2,7 @@ package com.j0aoarthur.pokerbank.infra.validators;
 
 import com.j0aoarthur.pokerbank.DTOs.request.PaymentDTO;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.entities.PaymentSituation;
+import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.exceptions.PaymentException;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class PaymentValidator {
         }
 
         if (payerGamePlayer.getPaid()) {
-            throw new PaymentException("O jogador pagador " + payerGamePlayer.getPlayer().getName() + " já quitou sua dívida neste jogo.");
+            throw new PaymentException("O jogador pagador " + payerGamePlayer.getClubMember().getName() + " já quitou sua dívida neste jogo.");
         }
 
         if (receiverGamePlayer.getPaid()) {
@@ -30,15 +30,15 @@ public class PaymentValidator {
             // A flag 'paid' do GamePlayer indica que ELE não tem mais nada a receber NO GERAL.
             // A questão é: ele pode receber um valor mesmo que JÁ TENHA RECEBIDO TUDO? Provavelmente não.
             // A lógica original está ok: se o recebedor já teve seu crédito total satisfeito, não deveria receber mais.
-            throw new PaymentException("O jogador recebedor " + receiverGamePlayer.getPlayer().getName() + " já recebeu todo o seu crédito neste jogo.");
+            throw new PaymentException("O jogador recebedor " + receiverGamePlayer.getClubMember().getName() + " já recebeu todo o seu crédito neste jogo.");
         }
 
         if (payerGamePlayer.getPaymentSituation() != PaymentSituation.PAY) {
-            throw new PaymentException("O jogador " + payerGamePlayer.getPlayer().getName() + " não está na situação de pagamento.");
+            throw new PaymentException("O jogador " + payerGamePlayer.getClubMember().getName() + " não está na situação de pagamento.");
         }
 
         if (receiverGamePlayer.getPaymentSituation() != PaymentSituation.RECEIVE) {
-            throw new PaymentException("O jogador " + receiverGamePlayer.getPlayer().getName() + " não está na situação de recebimento.");
+            throw new PaymentException("O jogador " + receiverGamePlayer.getClubMember().getName() + " não está na situação de recebimento.");
         }
 
         BigDecimal amountToPay = paymentDTO.amount();
