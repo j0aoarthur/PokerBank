@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.infra.security;
+package com.j0aoarthur.pokerbank.security;
 
 
 import lombok.RequiredArgsConstructor;

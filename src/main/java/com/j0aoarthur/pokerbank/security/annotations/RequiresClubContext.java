@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.infra.security.annotations;
+package com.j0aoarthur.pokerbank.security.annotations;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

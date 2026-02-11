@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.infra.security.annotations;
+package com.j0aoarthur.pokerbank.security.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

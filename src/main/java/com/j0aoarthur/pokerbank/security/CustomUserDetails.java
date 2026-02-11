@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.infra.security;
+package com.j0aoarthur.pokerbank.security;
 
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
