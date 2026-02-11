@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.DTOs.request;
+package com.j0aoarthur.pokerbank.dtos.request;
 
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import jakarta.persistence.EnumType;

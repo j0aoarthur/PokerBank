@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.DTOs.response;
+package com.j0aoarthur.pokerbank.dtos.response;
 
 import com.j0aoarthur.pokerbank.entities.Game;
 

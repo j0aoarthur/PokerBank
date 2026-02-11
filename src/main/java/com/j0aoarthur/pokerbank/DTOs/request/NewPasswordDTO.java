@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.DTOs.request;
+package com.j0aoarthur.pokerbank.dtos.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
