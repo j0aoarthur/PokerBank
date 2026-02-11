@@ -1,7 +1,7 @@
-package com.j0aoarthur.pokerbank.interfaces;
+package com.j0aoarthur.pokerbank.services;
 
-import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.GameInfoDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

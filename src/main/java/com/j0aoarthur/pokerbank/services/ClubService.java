@@ -1,6 +1,6 @@
-package com.j0aoarthur.pokerbank.interfaces;
+package com.j0aoarthur.pokerbank.services;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ClubRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.ClubMember;
 

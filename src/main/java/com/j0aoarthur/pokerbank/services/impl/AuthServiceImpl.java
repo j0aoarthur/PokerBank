@@ -1,19 +1,20 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.DTOs.request.AuthRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.AuthResponse;
+import com.j0aoarthur.pokerbank.dtos.request.AuthRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
+import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
 import com.j0aoarthur.pokerbank.entities.ClubMember;
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import com.j0aoarthur.pokerbank.infra.email.EmailService;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.infra.security.CustomUserDetails;
-import com.j0aoarthur.pokerbank.infra.security.TokenService;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
-import com.j0aoarthur.pokerbank.interfaces.AuthService;
-import com.j0aoarthur.pokerbank.interfaces.ClubMemberService;
 import com.j0aoarthur.pokerbank.repositories.UserRepository;
+import com.j0aoarthur.pokerbank.security.CustomUserDetails;
+import com.j0aoarthur.pokerbank.security.TokenService;
+import com.j0aoarthur.pokerbank.services.AuthService;
+import com.j0aoarthur.pokerbank.services.ClubMemberService;
+
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

@@ -1,18 +1,19 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ChipCountRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.UpdateGamePlayerDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ChipCountRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.UpdateGamePlayerDTO;
 import com.j0aoarthur.pokerbank.entities.*;
 import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.interfaces.ChipService;
-import com.j0aoarthur.pokerbank.interfaces.ClubMemberService;
-import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
-import com.j0aoarthur.pokerbank.interfaces.PlayerRankingService;
 import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
 import com.j0aoarthur.pokerbank.repositories.GamePlayerRepository;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
+import com.j0aoarthur.pokerbank.services.ChipService;
+import com.j0aoarthur.pokerbank.services.ClubMemberService;
+import com.j0aoarthur.pokerbank.services.GamePlayerService;
+import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
         GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(dto, game, clubMember));
 
         this.addChipCountToGamePlayer(gamePlayer, dto.chips());
-        this.countChipsAndBalance(gamePlayer);
+        gamePlayer.recalculateBalance();
         playerRankingService.updatePlayerRanking(gamePlayer);
         return gamePlayer;
     }
@@ -98,7 +99,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
 
         this.addChipCountToGamePlayer(gamePlayer, dto.chips());
 
-        this.countChipsAndBalance(gamePlayer);
+        gamePlayer.recalculateBalance();
         playerRankingService.updatePlayerRanking(gamePlayer);
 
         return gamePlayer;
@@ -119,29 +120,6 @@ public class GamePlayerServiceImpl implements GamePlayerService {
             ChipCount chipCount = new ChipCount(chipCountDTO, gamePlayer, chip);
             chipCountRepository.save(chipCount);
         }
-    }
-
-    @Transactional
-    protected void countChipsAndBalance(GamePlayer gamePlayer) {
-
-        List<ChipCount> chipCounts = chipCountRepository.findByGamePlayerId(gamePlayer.getId());
-
-        for (ChipCount chipCount : chipCounts) {
-            gamePlayer.setBalance(gamePlayer.getBalance().add(chipCount.getChip().getValue().multiply(new BigDecimal(chipCount.getQuantity()))));
-        }
-
-        gamePlayer.setBalance(gamePlayer.getBalance().subtract(gamePlayer.getInitialCash()));
-
-        if (gamePlayer.getBalance().compareTo(BigDecimal.ZERO) > 0) {
-            gamePlayer.setPaymentSituation(PaymentSituation.RECEIVE);
-        } else if (gamePlayer.getBalance().compareTo(BigDecimal.ZERO) < 0) {
-            gamePlayer.setPaymentSituation(PaymentSituation.PAY);
-        } else {
-            gamePlayer.setPaid(true);
-            gamePlayer.setPaymentSituation(PaymentSituation.NONE);
-        }
-
-        gamePlayerRepository.save(gamePlayer);
     }
 }
 

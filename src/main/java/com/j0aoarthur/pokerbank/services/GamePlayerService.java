@@ -1,7 +1,7 @@
-package com.j0aoarthur.pokerbank.interfaces;
+package com.j0aoarthur.pokerbank.services;
 
-import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.UpdateGamePlayerDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.UpdateGamePlayerDTO;
 import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;

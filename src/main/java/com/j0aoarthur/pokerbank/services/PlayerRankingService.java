@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.interfaces;
+package com.j0aoarthur.pokerbank.services;
 
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;

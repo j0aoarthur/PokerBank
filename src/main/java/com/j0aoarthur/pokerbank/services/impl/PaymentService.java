@@ -1,13 +1,14 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.DTOs.request.PaymentDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.PaymentSuggestionDTO;
+import com.j0aoarthur.pokerbank.dtos.request.PaymentDTO;
+import com.j0aoarthur.pokerbank.dtos.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.validators.PaymentValidator;
-import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
-import com.j0aoarthur.pokerbank.interfaces.GameService;
+import com.j0aoarthur.pokerbank.services.GamePlayerService;
+import com.j0aoarthur.pokerbank.services.GameService;
+
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;

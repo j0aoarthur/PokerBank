@@ -1,10 +1,11 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
-import com.j0aoarthur.pokerbank.interfaces.PlayerRankingService;
 import com.j0aoarthur.pokerbank.repositories.PlayerRankingRepository;
+import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

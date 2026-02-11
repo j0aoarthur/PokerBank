@@ -1,6 +1,6 @@
-package com.j0aoarthur.pokerbank.interfaces;
+package com.j0aoarthur.pokerbank.services;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
 
 import java.util.List;

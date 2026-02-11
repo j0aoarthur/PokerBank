@@ -1,8 +1,8 @@
-package com.j0aoarthur.pokerbank.interfaces;
+package com.j0aoarthur.pokerbank.services;
 
-import com.j0aoarthur.pokerbank.DTOs.request.AuthRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.AuthResponse;
+import com.j0aoarthur.pokerbank.dtos.request.AuthRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
+import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
 import com.j0aoarthur.pokerbank.entities.User;
 
 public interface AuthService {

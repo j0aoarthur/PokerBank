@@ -1,12 +1,13 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.interfaces.ChipService;
 import com.j0aoarthur.pokerbank.repositories.ChipRepository;
+import com.j0aoarthur.pokerbank.services.ChipService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

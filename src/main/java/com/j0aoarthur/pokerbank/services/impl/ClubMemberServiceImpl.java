@@ -1,14 +1,15 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ClubMemberRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.ClubMember;
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.infra.security.annotations.ClubIndependent;
-import com.j0aoarthur.pokerbank.interfaces.ClubMemberService;
 import com.j0aoarthur.pokerbank.repositories.ClubMemberRepository;
+import com.j0aoarthur.pokerbank.security.annotations.ClubIndependent;
+import com.j0aoarthur.pokerbank.services.ClubMemberService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

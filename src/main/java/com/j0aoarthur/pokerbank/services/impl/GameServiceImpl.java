@@ -1,16 +1,18 @@
-package com.j0aoarthur.pokerbank.services;
+package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GameInfoDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.GameInfoDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
+import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
-import com.j0aoarthur.pokerbank.interfaces.GameService;
-import com.j0aoarthur.pokerbank.interfaces.PlayerRankingService;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
+import com.j0aoarthur.pokerbank.services.GamePlayerService;
+import com.j0aoarthur.pokerbank.services.GameService;
+import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,7 +31,7 @@ public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
     private final GamePlayerService gamePlayerService;
     private final PlayerRankingService playerRankingService;
-    private final AuthContextServiceImpl authContextService;
+    private final AuthContextService authContextService;
 
     @Override
     @Transactional
