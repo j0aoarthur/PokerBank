@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.infra.clubTenancy;
+package com.j0aoarthur.pokerbank.tenancy;
 
 import com.j0aoarthur.pokerbank.infra.context.ClubContext;
 import org.aspectj.lang.ProceedingJoinPoint;

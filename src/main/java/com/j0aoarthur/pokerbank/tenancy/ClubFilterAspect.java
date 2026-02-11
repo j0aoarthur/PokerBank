@@ -1,4 +1,4 @@
-package com.j0aoarthur.pokerbank.infra.clubTenancy;
+package com.j0aoarthur.pokerbank.tenancy;
 
 import com.j0aoarthur.pokerbank.entities.BaseTenantEntity;
 import com.j0aoarthur.pokerbank.infra.context.ClubContext;
@@ -19,8 +19,13 @@ public class ClubFilterAspect {
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ClubFilterAspect.class);
 
-    // Intercepta ANTES de qualquer método em qualquer classe dentro do pacote de repositórios
-    @Before("execution(* com.j0aoarthur.pokerbank.repositories.*.*(..))")
+    // Intercepta ANTES de qualquer método em qualquer bean Repository
+    // Usamos bean(*Repository) para garantir que métodos herdados da JpaRepository
+    // (como findAll)
+    // também sejam interceptados. A expressão execution(* package.*.*(..)) não pega
+    // métodos herdados
+    // de classes fora do pacote.
+    @Before("bean(*Repository)")
     public void beforeRepositoryMethod(JoinPoint joinPoint) {
         Long clubId = ClubContext.getCurrentClubId();
 
