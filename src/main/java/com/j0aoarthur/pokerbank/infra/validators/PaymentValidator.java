@@ -1,6 +1,6 @@
 package com.j0aoarthur.pokerbank.infra.validators;
 
-import com.j0aoarthur.pokerbank.DTOs.request.PaymentDTO;
+import com.j0aoarthur.pokerbank.dtos.request.PaymentDTO;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.exceptions.PaymentException;

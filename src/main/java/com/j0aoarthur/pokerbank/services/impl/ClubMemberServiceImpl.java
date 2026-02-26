@@ -7,7 +7,6 @@ import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ClubMemberRepository;
-import com.j0aoarthur.pokerbank.security.annotations.ClubIndependent;
 import com.j0aoarthur.pokerbank.services.ClubMemberService;
 
 import jakarta.transaction.Transactional;

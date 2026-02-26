@@ -1,13 +1,11 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ClubMemberRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.TenantId;
 
 import java.time.LocalDateTime;
 

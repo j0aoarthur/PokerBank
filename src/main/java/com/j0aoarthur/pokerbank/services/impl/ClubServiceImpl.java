@@ -14,8 +14,6 @@ import com.j0aoarthur.pokerbank.services.ClubMemberService;
 import com.j0aoarthur.pokerbank.services.ClubService;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +27,6 @@ public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
     private final AuthContextService authContextService;
     private final ClubMemberService clubMemberService;
-    private static final Logger logger = LoggerFactory.getLogger(ClubServiceImpl.class);
 
 
 

@@ -1,6 +1,7 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ChipCountRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ChipCountRequestDTO;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,7 +3,6 @@ package com.j0aoarthur.pokerbank.services.impl;
 import com.j0aoarthur.pokerbank.dtos.request.AuthRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
 import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
-import com.j0aoarthur.pokerbank.entities.ClubMember;
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import com.j0aoarthur.pokerbank.infra.email.EmailService;

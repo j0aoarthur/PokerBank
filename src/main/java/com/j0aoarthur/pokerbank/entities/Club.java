@@ -1,6 +1,5 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ClubRequestDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
 
 @Entity
 @Table(name = "clubs")
