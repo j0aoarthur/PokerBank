@@ -1,10 +1,11 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ClubMemberRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.ClubMemberDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.ClubMemberDTO;
 import com.j0aoarthur.pokerbank.entities.ClubMember;
-import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
-import com.j0aoarthur.pokerbank.interfaces.ClubMemberService;
+import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.services.ClubMemberService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

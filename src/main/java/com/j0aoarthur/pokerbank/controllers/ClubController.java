@@ -1,17 +1,15 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ClubRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.ClubMemberDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.ClubResponseDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.ClubMemberDTO;
+import com.j0aoarthur.pokerbank.dtos.response.ClubResponseDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
-import com.j0aoarthur.pokerbank.infra.context.ClubContext;
-import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
-import com.j0aoarthur.pokerbank.interfaces.ClubService;
+import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.services.ClubService;
+
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +23,6 @@ import java.util.List;
 public class ClubController {
 
     private final ClubService clubService;
-    private static final Logger logger = LoggerFactory.getLogger(ClubController.class);
 
     @PostMapping
     public ResponseEntity<?> createClub(@RequestBody @Valid ClubRequestDTO clubRequestDTO) {

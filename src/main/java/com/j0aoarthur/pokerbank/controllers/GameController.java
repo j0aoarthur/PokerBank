@@ -1,15 +1,16 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.GameRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.UpdateGamePlayerDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.*;
+import com.j0aoarthur.pokerbank.dtos.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.UpdateGamePlayerDTO;
+import com.j0aoarthur.pokerbank.dtos.response.*;
 import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
-import com.j0aoarthur.pokerbank.interfaces.GamePlayerService;
-import com.j0aoarthur.pokerbank.interfaces.GameService;
+import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.services.GamePlayerService;
+import com.j0aoarthur.pokerbank.services.GameService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

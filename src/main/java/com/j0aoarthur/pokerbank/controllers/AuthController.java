@@ -1,12 +1,13 @@
 package com.j0aoarthur.pokerbank.controllers;
 
 
-import com.j0aoarthur.pokerbank.DTOs.request.AuthRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.LoginRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.NewPasswordDTO;
-import com.j0aoarthur.pokerbank.DTOs.request.RefreshTokenRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.AuthResponse;
-import com.j0aoarthur.pokerbank.interfaces.AuthService;
+import com.j0aoarthur.pokerbank.dtos.request.AuthRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.LoginRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
+import com.j0aoarthur.pokerbank.dtos.request.RefreshTokenRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
+import com.j0aoarthur.pokerbank.services.AuthService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

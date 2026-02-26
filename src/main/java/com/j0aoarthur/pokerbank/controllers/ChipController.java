@@ -1,10 +1,11 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.DTOs.request.ChipRequestDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.ChipDTO;
+import com.j0aoarthur.pokerbank.dtos.request.ChipRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.ChipDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
-import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
-import com.j0aoarthur.pokerbank.interfaces.ChipService;
+import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.services.ChipService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,9 +32,9 @@ public class ChipController {
     @Transactional
     // ADMINS PODEM CRIAR FICHAS
     @Operation(summary = "Cria uma nova ficha")
-    public ResponseEntity<Chip> createChip(@RequestBody @Valid ChipRequestDTO chipDTO) {
+    public ResponseEntity<ChipDTO> createChip(@RequestBody @Valid ChipRequestDTO chipDTO) {
         Chip createdChip = chipService.createChip(chipDTO);
-        return ResponseEntity.ok(createdChip);
+        return ResponseEntity.ok(new ChipDTO(createdChip));
     }
 
     @GetMapping

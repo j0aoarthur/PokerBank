@@ -1,13 +1,14 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.DTOs.request.PaymentDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GameDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.GamePlayerDTO;
-import com.j0aoarthur.pokerbank.DTOs.response.PaymentSuggestionDTO;
+import com.j0aoarthur.pokerbank.dtos.request.PaymentDTO;
+import com.j0aoarthur.pokerbank.dtos.response.GameDTO;
+import com.j0aoarthur.pokerbank.dtos.response.GamePlayerDTO;
+import com.j0aoarthur.pokerbank.dtos.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.infra.security.annotations.RequiresClubContext;
-import com.j0aoarthur.pokerbank.services.PaymentService;
+import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.services.impl.PaymentService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
