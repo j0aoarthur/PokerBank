@@ -1,12 +1,12 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.DTOs.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GamePlayerRequestDTO;
 import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Filter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -88,5 +88,31 @@ public class GamePlayer extends BaseTenantEntity {
         }
 
         return pending.max(BigDecimal.ZERO);
+    }
+
+    @Transactional
+    public void recalculateBalance() {
+
+        for (ChipCount chipCount : this.chipCounts) {
+            BigDecimal chipValue = chipCount.getChip().getValue();
+            BigDecimal chipQuantity = new BigDecimal(chipCount.getQuantity());
+
+            this.setBalance(this.getBalance().add(chipValue.multiply(chipQuantity)));
+        }
+
+        this.setBalance(this.getBalance().subtract(this.getInitialCash()));
+
+        switch (this.getBalance().compareTo(BigDecimal.ZERO)) {
+            case 1:
+                this.setPaymentSituation(PaymentSituation.RECEIVE);
+                break;
+            case -1:
+                this.setPaymentSituation(PaymentSituation.PAY);
+                break;
+            case 0:
+                this.setPaid(true);
+                this.setPaymentSituation(PaymentSituation.NONE);
+                break;
+        }
     }
 }
