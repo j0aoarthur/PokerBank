@@ -8,7 +8,6 @@ import com.j0aoarthur.pokerbank.entities.GamePlayer;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
-import com.j0aoarthur.pokerbank.services.GamePlayerService;
 import com.j0aoarthur.pokerbank.services.GameService;
 import com.j0aoarthur.pokerbank.services.PlayerRankingService;
 
@@ -28,7 +27,6 @@ import java.util.List;
 public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
-    private final GamePlayerService gamePlayerService;
     private final PlayerRankingService playerRankingService;
     private final AuthContextService authContextService;
 
@@ -53,7 +51,7 @@ public class GameServiceImpl implements GameService {
         }
 
         // Obter todos os jogadores da partida antes de excluir a partida
-        List<GamePlayer> gamePlayers = gamePlayerService.getGamePlayersByGame(id);
+        List<GamePlayer> gamePlayers = game.getPlayers();
 
         gameRepository.delete(game);
 
@@ -84,7 +82,7 @@ public class GameServiceImpl implements GameService {
     public GameInfoDTO getGameInfoById(Long id) {
         Game game = this.getGameById(id);
 
-        List<GamePlayer> gamePlayersWithBalance = gamePlayerService.getGamePlayersByGame(id);
+        List<GamePlayer> gamePlayersWithBalance = game.getPlayers();
 
         Integer totalPlayers = gamePlayersWithBalance.size();
 
@@ -124,7 +122,7 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public void checkGameFinished(Long gameId) {
         Game game = this.getGameById(gameId);
-        List<GamePlayer> gamePlayers = gamePlayerService.getGamePlayersByGame(gameId);
+        List<GamePlayer> gamePlayers = game.getPlayers();
 
         if (gamePlayers.isEmpty()) {
             throw new EntityNotFoundException("Nenhum jogador encontrado na partida de ID: " + gameId);

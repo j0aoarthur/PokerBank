@@ -60,7 +60,7 @@ public class GameController {
 
     @DeleteMapping("/{gameId}")
     @Operation(summary = "Deleta uma partida específica")
-    // ADMINS PODEM DELETAR PARTIDAS
+    // APENAS ADMINS PODEM DELETAR PARTIDAS
     public ResponseEntity<Void> deleteGame(@PathVariable Long gameId) {
         gameService.deleteGame(gameId);
         return ResponseEntity.noContent().build();
@@ -96,9 +96,9 @@ public class GameController {
 
     @GetMapping("/{gameId}/players/{clubMemberId}")
     @Operation(summary = "Retorna as informações de um jogador específico em uma partida")
-    public ResponseEntity<GamePlayerInfoDTO> getGamePlayerByGameAndPlayer(@PathVariable Long gameId, @PathVariable Long clubMemberId) {
-        GamePlayer gamePlayer = gamePlayerService.getGamePlayer(gameId, clubMemberId);
-        List<ChipCount> chipCounts = gamePlayerService.getChipCountsByGamePlayer(gamePlayer.getId());
+    public ResponseEntity<GamePlayerInfoDTO> getGamePlayerByGameAndMember(@PathVariable Long gameId, @PathVariable Long clubMemberId) {
+        GamePlayer gamePlayer = gamePlayerService.getGamePlayerByGameAndMember(gameId, clubMemberId);
+        List<ChipCount> chipCounts = gamePlayer.getChipCounts();
 
         GamePlayerInfoDTO gamePlayerInfo = new GamePlayerInfoDTO(gamePlayer, chipCounts.stream().map(ChipCountDTO::new).toList());
         return ResponseEntity.ok(gamePlayerInfo);

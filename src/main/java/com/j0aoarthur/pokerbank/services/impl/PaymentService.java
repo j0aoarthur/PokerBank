@@ -39,12 +39,14 @@ public class PaymentService {
     }
 
     public List<PaymentSuggestionDTO> getPaymentSuggestion(Long gameId) {
-        List<GamePlayer> gamePayers = gamePlayerService.getGamePlayersWithBalanceAndPaymentSituation(gameId, PaymentSituation.PAY)
+        List<GamePlayer> gamePayers = gamePlayerService
+                .getUnpaidGamePlayersByPaymentSituation(gameId, PaymentSituation.PAY)
                 .stream()
                 .filter(gp -> !gp.getPaid() && gp.getPendingAmount().compareTo(BigDecimal.ZERO) > 0)
                 .toList();
 
-        List<GamePlayer> gameReceivers = gamePlayerService.getGamePlayersWithBalanceAndPaymentSituation(gameId, PaymentSituation.RECEIVE)
+        List<GamePlayer> gameReceivers = gamePlayerService
+                .getUnpaidGamePlayersByPaymentSituation(gameId, PaymentSituation.RECEIVE)
                 .stream()
                 .filter(gp -> !gp.getPaid() && gp.getPendingAmount().compareTo(BigDecimal.ZERO) > 0)
                 .toList();
@@ -53,8 +55,7 @@ public class PaymentService {
                 .map(gp -> new ClubMemberPaymentData(
                         gp.getClubMember().getId(),
                         gp.getClubMember().getName(),
-                        gp.getPendingAmount()
-                ))
+                        gp.getPendingAmount()))
                 .sorted(Comparator.comparing(ClubMemberPaymentData::getPendingAmount).reversed())
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -62,8 +63,7 @@ public class PaymentService {
                 .map(gp -> new ClubMemberPaymentData(
                         gp.getClubMember().getId(),
                         gp.getClubMember().getName(),
-                        gp.getPendingAmount()
-                ))
+                        gp.getPendingAmount()))
                 .sorted(Comparator.comparing(ClubMemberPaymentData::getPendingAmount).reversed())
                 .collect(Collectors.toCollection(ArrayList::new));
 
@@ -84,8 +84,7 @@ public class PaymentService {
                         currentPayer.getClubMemberName(),
                         currentReceiver.getClubMemberId(),
                         currentReceiver.getClubMemberName(),
-                        amountToTransfer
-                ));
+                        amountToTransfer));
 
                 currentPayer.setPendingAmount(payerDebt.subtract(amountToTransfer));
                 currentReceiver.setPendingAmount(receiverCredit.subtract(amountToTransfer));
@@ -107,22 +106,26 @@ public class PaymentService {
 
     @Transactional
     public void payPlayer(PaymentDTO paymentDTO) {
-        GamePlayer payerGamePlayer = gamePlayerService.getGamePlayer(paymentDTO.gameId(), paymentDTO.payerId());
-        GamePlayer receiverGamePlayer = gamePlayerService.getGamePlayer(paymentDTO.gameId(), paymentDTO.receiverId());
+        GamePlayer payerGamePlayer = gamePlayerService.getGamePlayerByGameAndMember(paymentDTO.gameId(), paymentDTO.payerId());
+        GamePlayer receiverGamePlayer = gamePlayerService.getGamePlayerByGameAndMember(paymentDTO.gameId(), paymentDTO.receiverId());
 
         paymentValidator.validatePayment(paymentDTO, payerGamePlayer, receiverGamePlayer);
 
         // Atualiza o valor liquidado para o pagador e recebedor
         BigDecimal paymentAmount = paymentDTO.amount();
-        payerGamePlayer.setSettledAmount((payerGamePlayer.getSettledAmount() == null ? BigDecimal.ZERO : payerGamePlayer.getSettledAmount()).add(paymentAmount));
-        receiverGamePlayer.setSettledAmount((receiverGamePlayer.getSettledAmount() == null ? BigDecimal.ZERO : receiverGamePlayer.getSettledAmount()).add(paymentAmount));
+        payerGamePlayer.setSettledAmount(
+                (payerGamePlayer.getSettledAmount() == null ? BigDecimal.ZERO : payerGamePlayer.getSettledAmount())
+                        .add(paymentAmount));
+        receiverGamePlayer.setSettledAmount((receiverGamePlayer.getSettledAmount() == null ? BigDecimal.ZERO
+                : receiverGamePlayer.getSettledAmount()).add(paymentAmount));
 
         // Verifica se o pagador quitou sua dívida (balance é negativo)
         if (payerGamePlayer.getSettledAmount().compareTo(payerGamePlayer.getBalance().abs()) >= 0) {
             payerGamePlayer.setPaid(true);
         }
 
-        // Verifica se o recebedor teve seu crédito totalmente atendido (balance é positivo)
+        // Verifica se o recebedor teve seu crédito totalmente atendido (balance é
+        // positivo)
         if (receiverGamePlayer.getSettledAmount().compareTo(receiverGamePlayer.getBalance()) >= 0) {
             receiverGamePlayer.setPaid(true);
         }
@@ -148,11 +151,12 @@ public class PaymentService {
 
     public List<GamePlayer> getExpiredPaymentsByClubMember(Long clubMemberId) {
         List<Game> expiredGames = this.getExpiredGames();
-        List<GamePlayer> gamesByPlayer = gamePlayerService.getGamePlayersByPlayer(clubMemberId);
+        List<GamePlayer> gamesByPlayer = gamePlayerService.getGamePlayersByClubMember(clubMemberId);
         return gamesByPlayer.stream()
                 .filter(gamePlayer -> expiredGames.stream()
                         .anyMatch(game -> game.getId().equals(gamePlayer.getGame().getId()) && !gamePlayer.getPaid()))
-                .sorted(Comparator.comparing((GamePlayer gp) -> gp.getGame().getDueDate()).reversed()) // Melhor usar lambda tipado
+                .sorted(Comparator.comparing((GamePlayer gp) -> gp.getGame().getDueDate()).reversed()) // Melhor usar
+                                                                                                       // lambda tipado
                 .collect(Collectors.toList());
     }
 }
