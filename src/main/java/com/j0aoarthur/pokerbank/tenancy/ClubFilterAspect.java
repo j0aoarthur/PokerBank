@@ -17,16 +17,9 @@ public class ClubFilterAspect {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ClubFilterAspect.class);
-
-    // Intercepta ANTES de qualquer método em qualquer bean Repository
-    // Usamos bean(*Repository) para garantir que métodos herdados da JpaRepository
-    // (como findAll)
-    // também sejam interceptados. A expressão execution(* package.*.*(..)) não pega
-    // métodos herdados
-    // de classes fora do pacote.
-    @Before("bean(*Repository)")
-    public void beforeRepositoryMethod(JoinPoint joinPoint) {
+    // Intercepta antes de qualquer método em Repository
+    @Before("target(org.springframework.data.repository.Repository)")
+    public void beforeRepositoryMethod() {
         Long clubId = ClubContext.getCurrentClubId();
 
         if (clubId != null) {
@@ -34,15 +27,11 @@ public class ClubFilterAspect {
 
             session.enableFilter("clubFilter").setParameter("clubId", clubId);
         }
-
-        // Também precisamos aplicar o tenantId ao salvar/atualizar
-        // Esta é uma lógica mais complexa, geralmente feita no service ou
-        // usando @PrePersist/@PreUpdate (veja nota abaixo).
-        // Por hora, focamos na LEITURA.
     }
 
-    // Bônus: Aspecto para garantir que novas entidades recebam o tenantId
-    @Before("execution(* org.springframework.data.jpa.repository.JpaRepository.save*(..)) && args(entity)")
+    // Aspect para garantir que novas entidades recebam o tenantId
+    @Before("target(org.springframework.data.repository.Repository) && " +
+            "execution(* save(..)) && args(entity)")
     public void beforeSave(JoinPoint joinPoint, Object entity) {
         if (entity instanceof BaseTenantEntity) {
             Long clubId = ClubContext.getCurrentClubId();
