@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface GamePlayerService {
     GamePlayer addPlayerToGame(GamePlayerRequestDTO gamePlayer);
-    GamePlayer getGamePlayer(Long gameId, Long clubMemberId);
+    GamePlayer getGamePlayerByGameAndMember(Long gameId, Long clubMemberId);
     List<GamePlayer> getGamePlayersByGame(Long gameId);
-    List<GamePlayer> getGamePlayersByPlayer(Long clubMemberId);
-    List<GamePlayer> getGamePlayersWithBalanceAndPaymentSituation(Long gameId, PaymentSituation paymentSituation);
+    List<GamePlayer> getGamePlayersByClubMember(Long clubMemberId);
+    List<GamePlayer> getUnpaidGamePlayersByPaymentSituation(Long gameId, PaymentSituation paymentSituation);
     List<ChipCount> getChipCountsByGamePlayer(Long gamePlayerId);
     GamePlayer updateGamePlayer(Long gameId, Long clubMemberId, UpdateGamePlayerDTO dto);
     void updateGamePlayerPayment(GamePlayer gamePlayer);

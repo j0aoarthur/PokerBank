@@ -47,16 +47,17 @@ public class GamePlayerServiceImpl implements GamePlayerService {
         // Criar relação GamePlayer
         GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(dto, game, clubMember));
 
-        this.addChipCountToGamePlayer(gamePlayer, dto.chips());
+        this.addChipCountsToGamePlayer(gamePlayer, dto.chips());
         gamePlayer.recalculateBalance();
         playerRankingService.updatePlayerRanking(gamePlayer);
         return gamePlayer;
     }
 
     @Override
-    public GamePlayer getGamePlayer(Long gameId, Long clubMemberId) {
+    public GamePlayer getGamePlayerByGameAndMember(Long gameId, Long clubMemberId) {
         return gamePlayerRepository.findByGameIdAndClubMemberId(gameId, clubMemberId)
-                .orElseThrow(() -> new EntityNotFoundException("O jogador com ID: " + clubMemberId + " não está na partida com ID: " + gameId));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "O jogador com ID: " + clubMemberId + " não está na partida com ID: " + gameId));
     }
 
     @Override
@@ -65,7 +66,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
     }
 
     @Override
-    public List<GamePlayer> getGamePlayersByPlayer(Long clubMemberId) {
+    public List<GamePlayer> getGamePlayersByClubMember(Long clubMemberId) {
         List<GamePlayer> games = gamePlayerRepository.findByClubMemberId(clubMemberId);
         if (games.isEmpty()) {
             throw new EntityNotFoundException("Jogador não possui partidas jogadas");
@@ -75,21 +76,23 @@ public class GamePlayerServiceImpl implements GamePlayerService {
     }
 
     @Override
-    public List<GamePlayer> getGamePlayersWithBalanceAndPaymentSituation(Long gameId, PaymentSituation paymentSituation) {
-        return gamePlayerRepository.findByGameIdAndPaymentSituationAndPaidIsFalseOrderByBalance(gameId, paymentSituation);
+    public List<GamePlayer> getUnpaidGamePlayersByPaymentSituation(Long gameId, PaymentSituation paymentSituation) {
+        return gamePlayerRepository.findByGameIdAndPaymentSituationAndPaidIsFalseOrderByBalance(gameId,
+                paymentSituation);
     }
 
     @Override
     public List<ChipCount> getChipCountsByGamePlayer(Long gamePlayerId) {
-        return chipCountRepository.findByGamePlayerId(gamePlayerId).stream().filter(chipCount -> chipCount.getQuantity() > 0).toList();
+        return gamePlayerRepository.getReferenceById(gamePlayerId).getChipCounts().stream()
+                .filter(chipCount -> chipCount.getQuantity() > 0).toList();
     }
 
     @Override
     @Transactional
     public GamePlayer updateGamePlayer(Long gameId, Long clubMemberId, UpdateGamePlayerDTO dto) {
-        GamePlayer gamePlayer = this.getGamePlayer(gameId, clubMemberId);
+        GamePlayer gamePlayer = this.getGamePlayerByGameAndMember(gameId, clubMemberId);
 
-        List<ChipCount> existingChipCounts = chipCountRepository.findByGamePlayerId(gamePlayer.getId());
+        List<ChipCount> existingChipCounts = gamePlayer.getChipCounts();
         chipCountRepository.deleteAll(existingChipCounts);
         gamePlayer.setBalance(BigDecimal.ZERO);
 
@@ -97,7 +100,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
             gamePlayer.setInitialCash(dto.initialCash());
         }
 
-        this.addChipCountToGamePlayer(gamePlayer, dto.chips());
+        this.addChipCountsToGamePlayer(gamePlayer, dto.chips());
 
         gamePlayer.recalculateBalance();
         playerRankingService.updatePlayerRanking(gamePlayer);
@@ -112,7 +115,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
     }
 
     @Transactional
-    protected void addChipCountToGamePlayer(GamePlayer gamePlayer, List<ChipCountRequestDTO> chips) {
+    protected void addChipCountsToGamePlayer(GamePlayer gamePlayer, List<ChipCountRequestDTO> chips) {
         for (ChipCountRequestDTO chipCountDTO : chips) {
             Chip chip = chipService.getChipById(chipCountDTO.chipId());
 
