@@ -96,6 +96,15 @@ public class ClubServiceImpl implements ClubService {
     }
 
     public List<ClubMember> getClubMembers() {
-        return clubMemberService.getAllClubMembers();
+        Club currentClub = authContextService.getCurrentClub();
+        return currentClub.getClubMembers();
+    }
+
+    @Override
+    public void removeMemberFromClub(Long clubId, Long clubMemberId) {
+        Club club = this.getClubById(clubId);
+        ClubMember clubMember = clubMemberService.getClubMemberById(clubMemberId);
+        club.getClubMembers().remove(clubMember);
+        clubRepository.save(club);
     }
 }

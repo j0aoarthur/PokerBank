@@ -14,5 +14,6 @@ public interface ClubService {
     ClubMember joinClub(String publicCode);
     void deleteClub(Long clubId);
     List<Club> getMyClubs();
-    public List<ClubMember> getClubMembers();
+    List<ClubMember> getClubMembers();
+    void removeMemberFromClub(Long clubId, Long clubMemberId);
 }

@@ -101,4 +101,16 @@ public class ClubController {
             return ResponseEntity.status(404).body("Clube não encontrado. " + e.getMessage());
         }
     }
+
+    @DeleteMapping("/{clubId}/members/{clubMemberId}")
+    @RequiresClubContext
+    // APENAS OWNER PODE REMOVER MEMBROS DO CLUBE
+    public ResponseEntity<?> removeMemberFromClub(@PathVariable Long clubId, @PathVariable Long clubMemberId) {
+        try {
+            clubService.removeMemberFromClub(clubId, clubMemberId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Erro ao remover membro do clube. " + e.getMessage());
+        }
+    }
 }
