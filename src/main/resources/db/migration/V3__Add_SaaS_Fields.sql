@@ -21,9 +21,10 @@ SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 -- =================================================================
 
 ALTER TABLE club_members
-    ADD COLUMN user_id BIGINT UNIQUE,
+    ADD COLUMN user_id BIGINT,
     ADD COLUMN club_id BIGINT,
-    ADD COLUMN claim_token VARCHAR(255) UNIQUE;
+    -- Token para associação de identidade entre usuario e membro do clube legado
+    ADD COLUMN claim_token VARCHAR(255);
 
 ALTER TABLE games
     ADD COLUMN club_id BIGINT;
@@ -45,7 +46,7 @@ ALTER TABLE chips
 -- Cria um "Clube Padrão" para abrigar todos os jogadores e jogos existentes.
 -- NOTA: O owner_id=1 é um placeholder. Você precisará criar um 'user' admin com ID 1
 -- ou ajustar este valor para um utilizador real que será o dono dos dados legados.
-INSERT INTO clubs (id, name) VALUES (1, 'Clube Principal');
+INSERT INTO clubs (id, name, description) VALUES (1, 'Clube Principal', 'Clube de histórico criado para migrar os dados legados');
 -- Garante que o próximo clube a ser criado terá o ID 2
 SELECT setval('clubs_id_seq', (SELECT MAX(id) FROM clubs));
 
