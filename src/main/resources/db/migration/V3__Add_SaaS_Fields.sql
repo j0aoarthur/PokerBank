@@ -22,9 +22,7 @@ SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 
 ALTER TABLE club_members
     ADD COLUMN user_id BIGINT,
-    ADD COLUMN club_id BIGINT,
-    -- Token para associação de identidade entre usuario e membro do clube legado
-    ADD COLUMN claim_token VARCHAR(255);
+    ADD COLUMN club_id BIGINT;
 
 ALTER TABLE games
     ADD COLUMN club_id BIGINT;
