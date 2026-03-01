@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "club_members")
@@ -35,6 +36,9 @@ public class ClubMember extends BaseTenantEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "claim_token", unique = true)
+    private UUID claimToken;
 
     public ClubMember(ClubMemberRequestDTO clubMemberDTO, Club club, User user) {
         this.setName(clubMemberDTO.name());
