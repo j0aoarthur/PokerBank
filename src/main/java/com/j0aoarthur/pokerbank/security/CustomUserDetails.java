@@ -33,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
         this.role = role;
 
         if (role != null) {
-            this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+            this.authorities = List.of(new SimpleGrantedAuthority(role.getRoleName()));
         } else {
             this.authorities = Collections.emptyList();
         }
