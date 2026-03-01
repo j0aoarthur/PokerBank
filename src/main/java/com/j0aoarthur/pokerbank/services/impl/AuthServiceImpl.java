@@ -5,15 +5,14 @@ import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
 import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
 import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
+import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.email.EmailService;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.repositories.UserRepository;
 import com.j0aoarthur.pokerbank.security.CustomUserDetails;
 import com.j0aoarthur.pokerbank.security.TokenService;
 import com.j0aoarthur.pokerbank.services.AuthService;
 import com.j0aoarthur.pokerbank.services.ClubMemberService;
-
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -39,8 +38,8 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
     private final AuthContextService authContextService;
     private final ClubMemberService clubMemberService;
 
-    @Value("${app.baseurl}")
-    private String appBaseurl;
+    @Value("${frontend.base-url}")
+    private String frontendBaseUrl;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -108,7 +107,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         user.generateVerificationToken();
 
         // Enviar e-mail de verificação (Mudar o link para o seu domínio real em produção)
-        String verificationLink = appBaseurl + "/auth/verify?token=" + user.getVerificationToken();
+        String verificationLink = frontendBaseUrl + "/auth/verify?token=" + user.getVerificationToken();
         try {
             emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), verificationLink);
         } catch (Exception e) {
@@ -153,7 +152,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         user.generateResetToken();
 
         // Enviar e-mail com o link de redefinição de senha
-        String resetLink = appBaseurl + "/auth/reset-password?token=" + user.getResetToken();
+        String resetLink = frontendBaseUrl + "/auth/reset-password?token=" + user.getResetToken();
         try {
             emailService.sendResetEmail(user.getEmail(), user.getUsername(), resetLink);
         } catch (Exception e) {
