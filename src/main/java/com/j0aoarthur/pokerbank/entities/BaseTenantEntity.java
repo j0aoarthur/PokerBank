@@ -1,12 +1,11 @@
 package com.j0aoarthur.pokerbank.entities;
 
+import com.j0aoarthur.pokerbank.tenancy.ClubFilterable;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
-
-import com.j0aoarthur.pokerbank.tenancy.ClubFilterable;
 
 @MappedSuperclass
 @FilterDef(name = "clubFilter", parameters = {@ParamDef(name = "clubId", type = Long.class)}, defaultCondition = "club_id = :clubId")

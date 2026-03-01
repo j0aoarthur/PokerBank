@@ -1,11 +1,10 @@
 package com.j0aoarthur.pokerbank.entities;
 
+import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
