@@ -101,24 +101,23 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @ClubIndependent
     @Transactional
     public ClubMember claimClubMember(UUID claimToken) {
-        Optional<ClubMember> clubMember = clubMemberRepository.findByClaimToken(claimToken);
+        User currentUser = authContextService.getCurrentUser();
 
-        if (clubMember.isEmpty()) {
+        Integer updatedRows = clubMemberRepository.updateUserByClaimToken(claimToken, currentUser);
+
+        if (updatedRows == 0) {
             throw new EntityNotFoundException("Jogador não encontrado com o claim token: " + claimToken);
         }
 
-        ClubMember currentClubMember = clubMember.get();
-
-        User currentUser = authContextService.getCurrentUser();
-
-        Optional<ClubMember> existingMember = clubMemberRepository.findByUserIdAndClubId(currentUser.getId(), currentClubMember.getClub().getId());
-        if (existingMember.isPresent()) {
-            throw new IllegalArgumentException("O usuário já é um jogador deste clube.");
+        if (updatedRows > 1) {
+            throw new IllegalStateException("Mais de um jogador encontrado com o claim token: " + claimToken);
         }
 
-        currentClubMember.setUser(currentUser);
-        currentClubMember.setClaimToken(null);
+        List<ClubMember> userMemberships = clubMemberRepository.findAllByUserId(currentUser.getId());
+        if (userMemberships.isEmpty()) {
+            throw new EntityNotFoundException("Jogador não encontrado para o usuário.");
+        }
 
-        return clubMemberRepository.save(currentClubMember);
+        return userMemberships.get(userMemberships.size() - 1);
     }
 }
