@@ -7,7 +7,6 @@ import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
 import com.j0aoarthur.pokerbank.dtos.request.RefreshTokenRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
 import com.j0aoarthur.pokerbank.services.AuthService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

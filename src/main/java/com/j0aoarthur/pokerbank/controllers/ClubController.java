@@ -4,12 +4,14 @@ import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.response.ClubMemberDTO;
 import com.j0aoarthur.pokerbank.dtos.response.ClubResponseDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
+import com.j0aoarthur.pokerbank.infra.context.ClubContext;
 import com.j0aoarthur.pokerbank.services.ClubService;
 import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,7 +52,7 @@ public class ClubController {
     }
 
     @PutMapping("/{clubId}")
-    // ADMINS PODEM ATUALIZAR O CLUBE
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     public ResponseEntity<?> updateClub(@PathVariable Long clubId, @RequestBody @Valid ClubRequestDTO clubRequestDTO) {
         try {
             Club newClub = clubService.updateClub(clubId, clubRequestDTO);
@@ -61,7 +63,7 @@ public class ClubController {
     }
 
     @DeleteMapping("/{clubId}")
-    // OWNER PODE DELETAR O CLUBE
+    @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<String> deleteClub(@PathVariable Long clubId) {
         try {
             clubService.deleteClub(clubId);
@@ -101,11 +103,12 @@ public class ClubController {
         }
     }
 
-    @DeleteMapping("/{clubId}/members/{clubMemberId}")
+    @DeleteMapping("/members/{clubMemberId}")
     @RequiresClubContext
-    // APENAS OWNER PODE REMOVER MEMBROS DO CLUBE
-    public ResponseEntity<?> removeMemberFromClub(@PathVariable Long clubId, @PathVariable Long clubMemberId) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    public ResponseEntity<?> removeMemberFromClub(@PathVariable Long clubMemberId) {
         try {
+            Long clubId = ClubContext.getCurrentClubId();
             clubService.removeMemberFromClub(clubId, clubMemberId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
