@@ -2,9 +2,8 @@ package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.dtos.response.PlayerRankingDTO;
 import com.j0aoarthur.pokerbank.entities.PlayerRanking;
-import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
 import com.j0aoarthur.pokerbank.services.PlayerRankingService;
-
+import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
