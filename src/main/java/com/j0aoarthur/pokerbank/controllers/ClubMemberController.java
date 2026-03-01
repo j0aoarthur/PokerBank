@@ -26,33 +26,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClubMemberController {
 
-    private final ClubMemberService playerService;
+    private final ClubMemberService clubMemberService;
 
     @PostMapping
     @Operation(summary = "Cria um novo jogador")
     public ResponseEntity<ClubMemberDTO> createClubMember(@RequestBody ClubMemberRequestDTO clubMemberDTO) {
-        ClubMember createdClubMember = playerService.createClubMember(clubMemberDTO);
+        ClubMember createdClubMember = clubMemberService.createClubMember(clubMemberDTO);
         return ResponseEntity.ok(new ClubMemberDTO(createdClubMember));
-
     }
 
     @GetMapping
     @Operation(summary = "Retorna todos os jogadores")
     public ResponseEntity<List<ClubMember>> getAllClubMembers() {
-        return ResponseEntity.ok(playerService.getAllClubMembers());
+        return ResponseEntity.ok(clubMemberService.getAllClubMembers());
     }
 
     @GetMapping("/not-in-game/{gameId}")
     @Operation(summary = "Retorna todos os jogadores que não estão em uma partida específica")
     public ResponseEntity<List<ClubMember>> getClubMembersNotInGame(@PathVariable Long gameId) {
-        return ResponseEntity.ok(playerService.getClubMembersNotInGame(gameId));
+        return ResponseEntity.ok(clubMemberService.getClubMembersNotInGame(gameId));
     }
 
     @PostMapping("/claim")
-    @Operation(summary = "Reivindica um jogador")
+    @Operation(summary = "Reivindica um membro do clube")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ClubMemberDTO> claimClubMember(@RequestBody @Valid ClaimTokenRequestDTO request) {
-        ClubMember claimedClubMember = playerService.claimClubMember(request.claimToken());
+        ClubMember claimedClubMember = clubMemberService.claimClubMember(request.claimToken());
         return ResponseEntity.ok(new ClubMemberDTO(claimedClubMember));
     }
 }

@@ -8,7 +8,6 @@ import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.validators.PaymentValidator;
 import com.j0aoarthur.pokerbank.services.GamePlayerService;
 import com.j0aoarthur.pokerbank.services.GameService;
-
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;

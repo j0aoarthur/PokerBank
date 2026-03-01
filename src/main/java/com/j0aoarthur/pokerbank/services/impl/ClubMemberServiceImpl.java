@@ -11,8 +11,6 @@ import com.j0aoarthur.pokerbank.services.ClubMemberService;
 import com.j0aoarthur.pokerbank.tenancy.annotations.ClubIndependent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -26,7 +24,6 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     private final ClubMemberRepository clubMemberRepository;
     private final AuthContextService authContextService;
-    private static final Logger logger = LoggerFactory.getLogger(ClubMemberServiceImpl.class);
 
     @Override
     @Transactional
@@ -42,7 +39,6 @@ public class ClubMemberServiceImpl implements ClubMemberService {
         if (existingPlayer.isPresent()) {
             throw new IllegalArgumentException("O usuário já é um jogador deste clube.");
         }
-        logger.info("Club id inside createClubMember: " + club.getId());
 
         ClubMember clubMember = new ClubMember(clubMemberDTO, club, currentUser);
 

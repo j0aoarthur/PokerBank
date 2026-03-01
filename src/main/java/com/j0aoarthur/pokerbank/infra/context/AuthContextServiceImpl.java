@@ -5,7 +5,6 @@ import com.j0aoarthur.pokerbank.entities.User;
 import com.j0aoarthur.pokerbank.repositories.ClubRepository;
 import com.j0aoarthur.pokerbank.repositories.UserRepository;
 import com.j0aoarthur.pokerbank.security.CustomUserDetails;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
