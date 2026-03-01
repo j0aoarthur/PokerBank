@@ -14,7 +14,7 @@ public class ClubIndependentAspect {
     @Around("@annotation(com.j0aoarthur.pokerbank.tenancy.annotations.ClubIndependent)")
     public Object executeAsClubIndependent(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        // 1. Salva o contexto de tenant atual (se houver)
+        // 1. Salva o contexto de clube atual (se houver)
         Long currentClubId = ClubContext.getCurrentClubId();
 
         // 2. Limpa o contexto para a execução do método
