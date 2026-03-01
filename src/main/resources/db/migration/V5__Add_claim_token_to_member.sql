@@ -1,14 +1,16 @@
--- Create pgcrypto extension
+-- Cria a extensão pgcrypto
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Add claim token to member
-ALTER TABLE club_members ADD COLUMN claim_token UUID;
+-- Adiciona o claim token ao membro
+ALTER TABLE club_members 
+ADD COLUMN claim_token UUID;
 
-INSERT INTO club_members (name, role, club_id) VALUES
-    ('Alice', 'PLAYER', 1);
+-- Gera o claim token para os membros existentes
+UPDATE club_members 
+SET claim_token = gen_random_uuid() 
+WHERE claim_token IS NULL 
+  AND user_id IS NULL;
 
--- Generate claim token for existing members
-UPDATE club_members SET claim_token = gen_random_uuid() WHERE claim_token IS NULL;
-
--- Make sure of unique claim token
-ALTER TABLE club_members ADD CONSTRAINT unique_claim_token UNIQUE (claim_token);
+-- Garante que o claim token seja único
+ALTER TABLE club_members 
+ADD CONSTRAINT unique_claim_token UNIQUE (claim_token);
