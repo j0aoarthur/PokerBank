@@ -10,7 +10,6 @@ import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
 import com.j0aoarthur.pokerbank.services.GameService;
 import com.j0aoarthur.pokerbank.services.PlayerRankingService;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -73,6 +72,13 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findAll().stream().sorted(Comparator.comparing(Game::getDate).reversed()).toList();
     }
 
+    // Buscar partida por ID
+    public Game getGameById(Long id) {
+        return gameRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada com o ID: " + id));
+    }
+
+    // Buscar as 3 últimas partidas
     @Override
     public List<Game> getLatestGames() {
         return gameRepository.findTop3ByOrderByDateDesc();
@@ -134,12 +140,6 @@ public class GameServiceImpl implements GameService {
             game.setIsFinished(true);
             gameRepository.save(game);
         }
-    }
-
-    // Buscar partida por ID
-    private Game getGameById(Long id) {
-        return gameRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada com o ID: " + id));
     }
 }
 

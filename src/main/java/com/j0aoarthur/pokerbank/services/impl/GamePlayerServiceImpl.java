@@ -8,12 +8,7 @@ import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ChipCountRepository;
 import com.j0aoarthur.pokerbank.repositories.GamePlayerRepository;
-import com.j0aoarthur.pokerbank.repositories.GameRepository;
-import com.j0aoarthur.pokerbank.services.ChipService;
-import com.j0aoarthur.pokerbank.services.ClubMemberService;
-import com.j0aoarthur.pokerbank.services.GamePlayerService;
-import com.j0aoarthur.pokerbank.services.PlayerRankingService;
-
+import com.j0aoarthur.pokerbank.services.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GamePlayerServiceImpl implements GamePlayerService {
 
-    private final GameRepository gameRepository;
+    private final GameService gameService;
     private final ClubMemberService clubMemberService;
     private final ChipService chipService;
     private final PlayerRankingService playerRankingService;
@@ -35,8 +30,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
     @Override
     @Transactional
     public GamePlayer addPlayerToGame(GamePlayerRequestDTO dto) {
-        Game game = gameRepository.findById(dto.gameId())
-                .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada com o ID: " + dto.gameId()));
+        Game game = gameService.getGameById(dto.gameId());
         ClubMember clubMember = clubMemberService.getClubMemberById(dto.clubMemberId());
 
         // Verifica se o jogador já está na partida
@@ -93,7 +87,7 @@ public class GamePlayerServiceImpl implements GamePlayerService {
         GamePlayer gamePlayer = this.getGamePlayerByGameAndMember(gameId, clubMemberId);
 
         List<ChipCount> existingChipCounts = gamePlayer.getChipCounts();
-        chipCountRepository.deleteAll(existingChipCounts);
+        existingChipCounts.clear();
         gamePlayer.setBalance(BigDecimal.ZERO);
 
         if (dto.initialCash() != null) {
@@ -121,8 +115,10 @@ public class GamePlayerServiceImpl implements GamePlayerService {
 
             // Criar relação ChipCount
             ChipCount chipCount = new ChipCount(chipCountDTO, gamePlayer, chip);
+
+            gamePlayer.getChipCounts().add(chipCount);
+
             chipCountRepository.save(chipCount);
         }
     }
 }
-

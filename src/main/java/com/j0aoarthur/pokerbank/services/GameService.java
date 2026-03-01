@@ -12,6 +12,7 @@ public interface GameService {
     Game createGame(GameRequestDTO gameRequestDTO);
     void deleteGame(Long id);
     Page<Game> getGames(Pageable pageable);
+    Game getGameById(Long id);
     List<Game> getAllGames();
     List<Game> getLatestGames();
     GameInfoDTO getGameInfoById(Long id);
