@@ -6,6 +6,7 @@ import com.j0aoarthur.pokerbank.entities.ClubMember;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ClubMemberService {
     ClubMember createClubMember(ClubMemberRequestDTO clubMemberDTO, Club club);
@@ -16,4 +17,5 @@ public interface ClubMemberService {
     Optional<ClubMember> getMemberByUserAndClub(Long userId, Long clubId);
     List<Club> getClubsByUserId(Long userId);
     ClubMember getClubMemberByUserId(Long userId);
+    ClubMember claimClubMember(UUID claimToken);
 }

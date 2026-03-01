@@ -4,9 +4,8 @@ import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.response.ClubMemberDTO;
 import com.j0aoarthur.pokerbank.dtos.response.ClubResponseDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
-import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
 import com.j0aoarthur.pokerbank.services.ClubService;
-
+import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

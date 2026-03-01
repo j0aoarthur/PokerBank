@@ -10,19 +10,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClubIndependentAspect {
 
-    // Executa "ao redor" de qualquer método anotado com @TenantIndependent
-    @Around("@annotation(com.j0aoarthur.pokerbank.infra.security.annotations.ClubIndependent)")
-    public Object executeAsTenantIndependent(ProceedingJoinPoint joinPoint) throws Throwable {
+    // Executa "ao redor" de qualquer método anotado com @ClubIndependent
+    @Around("@annotation(com.j0aoarthur.pokerbank.tenancy.annotations.ClubIndependent)")
+    public Object executeAsClubIndependent(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        // 1. Salva o contexto de tenant atual (se houver)
+        // 1. Salva o contexto de clube atual (se houver)
         Long currentClubId = ClubContext.getCurrentClubId();
 
         // 2. Limpa o contexto para a execução do método
         ClubContext.clear();
 
         try {
-            // 3. Executa o método de serviço (ex: findAllGlobal())
-            // O TenantFilterAspect verá o context como NULL e não aplicará o filtro
+            // 3. Executa o método
+            // O ClubIndependentAspect verá o contexto como null e não aplicará o filtro
             return joinPoint.proceed();
         } finally {
             // 4. Restaura o contexto original após a execução

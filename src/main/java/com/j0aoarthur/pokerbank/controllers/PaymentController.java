@@ -6,9 +6,8 @@ import com.j0aoarthur.pokerbank.dtos.response.GamePlayerDTO;
 import com.j0aoarthur.pokerbank.dtos.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
 import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
 import com.j0aoarthur.pokerbank.services.impl.PaymentService;
-
+import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

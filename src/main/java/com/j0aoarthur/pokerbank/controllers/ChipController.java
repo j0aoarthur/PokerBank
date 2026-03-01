@@ -3,7 +3,7 @@ package com.j0aoarthur.pokerbank.controllers;
 import com.j0aoarthur.pokerbank.dtos.request.ChipRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.response.ChipDTO;
 import com.j0aoarthur.pokerbank.entities.Chip;
-import com.j0aoarthur.pokerbank.security.annotations.RequiresClubContext;
+import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import com.j0aoarthur.pokerbank.services.ChipService;
 
 import io.swagger.v3.oas.annotations.Operation;
