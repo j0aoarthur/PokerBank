@@ -9,6 +9,7 @@ import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +51,7 @@ public class ClubMemberController {
     @PostMapping("/claim")
     @Operation(summary = "Reivindica um jogador")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ClubMemberDTO> claimClubMember(@RequestBody ClaimTokenRequestDTO request) {
+    public ResponseEntity<ClubMemberDTO> claimClubMember(@RequestBody @Valid ClaimTokenRequestDTO request) {
         ClubMember claimedClubMember = playerService.claimClubMember(request.claimToken());
         return ResponseEntity.ok(new ClubMemberDTO(claimedClubMember));
     }
