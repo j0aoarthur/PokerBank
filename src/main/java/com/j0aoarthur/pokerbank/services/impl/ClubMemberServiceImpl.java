@@ -4,11 +4,11 @@ import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.ClubMember;
 import com.j0aoarthur.pokerbank.entities.User;
-import com.j0aoarthur.pokerbank.infra.context.AuthContextServiceImpl;
+import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ClubMemberRepository;
 import com.j0aoarthur.pokerbank.services.ClubMemberService;
-
+import com.j0aoarthur.pokerbank.tenancy.annotations.ClubIndependent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,13 +18,14 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ClubMemberServiceImpl implements ClubMemberService {
 
     private final ClubMemberRepository clubMemberRepository;
-    private final AuthContextServiceImpl authContextService;
+    private final AuthContextService authContextService;
     private static final Logger logger = LoggerFactory.getLogger(ClubMemberServiceImpl.class);
 
     @Override
@@ -43,9 +44,7 @@ public class ClubMemberServiceImpl implements ClubMemberService {
         }
         logger.info("Club id inside createClubMember: " + club.getId());
 
-
         ClubMember clubMember = new ClubMember(clubMemberDTO, club, currentUser);
-
 
         return clubMemberRepository.save(clubMember);
     }
@@ -64,7 +63,8 @@ public class ClubMemberServiceImpl implements ClubMemberService {
 
     @Override
     public List<ClubMember> getAllClubMembers() {
-        List<ClubMember> allClubMembers = clubMemberRepository.findAll().stream().sorted(Comparator.comparing(ClubMember::getName)).toList();
+        List<ClubMember> allClubMembers = clubMemberRepository.findAll().stream()
+                .sorted(Comparator.comparing(ClubMember::getName)).toList();
         if (allClubMembers.isEmpty()) {
             throw new EntityNotFoundException("Nenhum jogador encontrado.");
         }
@@ -84,7 +84,8 @@ public class ClubMemberServiceImpl implements ClubMemberService {
     @Override
     public ClubMember getClubMemberByUserId(Long userId) {
         return clubMemberRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Jogador não encontrado para o usuário com ID: " + userId));
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Jogador não encontrado para o usuário com ID: " + userId));
     }
 
     @Override
@@ -94,5 +95,30 @@ public class ClubMemberServiceImpl implements ClubMemberService {
             return clubMembers.stream().map(ClubMember::getClub).toList();
         }
         throw new EntityNotFoundException("O usuário não pertence a nenhum clube.");
+    }
+
+    @Override
+    @ClubIndependent
+    @Transactional
+    public ClubMember claimClubMember(UUID claimToken) {
+        Optional<ClubMember> clubMember = clubMemberRepository.findByClaimToken(claimToken);
+
+        if (clubMember.isEmpty()) {
+            throw new EntityNotFoundException("Jogador não encontrado com o claim token: " + claimToken);
+        }
+
+        ClubMember currentClubMember = clubMember.get();
+
+        User currentUser = authContextService.getCurrentUser();
+
+        Optional<ClubMember> existingMember = clubMemberRepository.findByUserIdAndClubId(currentUser.getId(), currentClubMember.getClub().getId());
+        if (existingMember.isPresent()) {
+            throw new IllegalArgumentException("O usuário já é um jogador deste clube.");
+        }
+
+        currentClubMember.setUser(currentUser);
+        currentClubMember.setClaimToken(null);
+
+        return clubMemberRepository.save(currentClubMember);
     }
 }
