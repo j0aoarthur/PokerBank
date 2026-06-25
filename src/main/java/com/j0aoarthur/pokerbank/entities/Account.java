@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "accounts")
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ public class User {
     private Long resetTokenExpiration;
 
 
-    public User(AuthRequestDTO authRequestDTO, String encodedPassword) {
+    public Account(AuthRequestDTO authRequestDTO, String encodedPassword) {
         this.name = authRequestDTO.name();
         this.username = authRequestDTO.username();
         this.password = encodedPassword;

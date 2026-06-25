@@ -1,6 +1,6 @@
 package com.j0aoarthur.pokerbank.security;
 
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Account;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,12 +24,12 @@ public class CustomUserDetails implements UserDetails {
     private final Role role;
     private Long clubId = null;
 
-    public CustomUserDetails(User user, Role role) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
+    public CustomUserDetails(Account account, Role role) {
+        this.id = account.getId();
+        this.username = account.getUsername();
+        this.password = account.getPassword();
         this.isEnabled = true;
-//        this.isEnabled = user.getIsVerified(); // A conta está ativa se o e-mail foi verificado
+//        this.isEnabled = account.getIsVerified(); // A conta está ativa se o e-mail foi verificado
         this.role = role;
 
         if (role != null) {
@@ -39,17 +39,17 @@ public class CustomUserDetails implements UserDetails {
         }
     }
 
-    public CustomUserDetails(User user, Role role, Long clubId) {
-        this(user, role);
+    public CustomUserDetails(Account account, Role role, Long clubId) {
+        this(account, role);
         this.clubId = clubId;
     }
 
-    public CustomUserDetails(User user) {
-        this(user, null);
+    public CustomUserDetails(Account account) {
+        this(account, null);
     }
 
-    public static CustomUserDetails create(User user) {
-        return new CustomUserDetails(user, null);
+    public static CustomUserDetails create(Account account) {
+        return new CustomUserDetails(account, null);
     }
 
     @Override

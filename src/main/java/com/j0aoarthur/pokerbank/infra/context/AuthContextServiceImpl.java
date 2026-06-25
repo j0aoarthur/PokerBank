@@ -1,9 +1,9 @@
 package com.j0aoarthur.pokerbank.infra.context;
 
 import com.j0aoarthur.pokerbank.entities.Club;
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Account;
 import com.j0aoarthur.pokerbank.repositories.ClubRepository;
-import com.j0aoarthur.pokerbank.repositories.UserRepository;
+import com.j0aoarthur.pokerbank.repositories.AccountRepository;
 import com.j0aoarthur.pokerbank.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthContextServiceImpl implements AuthContextService {
 
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final ClubRepository clubRepository;
 
     @Override
-    public User getCurrentUser() {
+    public Account getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -31,7 +31,7 @@ public class AuthContextServiceImpl implements AuthContextService {
         } else {
             username = authentication.getName();
         }
-        return userRepository.findByUsername(username)
+        return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o username: " + username));
     }
 

@@ -1,9 +1,9 @@
 package com.j0aoarthur.pokerbank.infra.context;
 
 import com.j0aoarthur.pokerbank.entities.Club;
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Account;
 
 public interface AuthContextService {
-    User getCurrentUser();
+    Account getCurrentUser();
     Club getCurrentClub();
 }

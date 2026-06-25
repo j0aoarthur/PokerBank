@@ -1,9 +1,9 @@
 package com.j0aoarthur.pokerbank.security;
 
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Account;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import com.j0aoarthur.pokerbank.infra.context.ClubContext;
-import com.j0aoarthur.pokerbank.repositories.UserRepository;
+import com.j0aoarthur.pokerbank.repositories.AccountRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -42,7 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (tokenService.validateToken(jwt)) {
                 String username = tokenService.extractUsername(jwt);
 
-                User user = userRepository.findByUsername(username)
+                Account account = accountRepository.findByUsername(username)
                         .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o username: " + username));
 
                 Claims claims = tokenService.extractAllClaims(jwt);
@@ -51,7 +51,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 Role role = claims.get("role", String.class) != null ? Role.valueOf(claims.get("role", String.class))
                         : null;
 
-                UserDetails userDetails = new CustomUserDetails(user, role);
+                UserDetails userDetails = new CustomUserDetails(account, role);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

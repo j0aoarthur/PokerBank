@@ -2,7 +2,7 @@ package com.j0aoarthur.pokerbank.security;
 
 
 import com.j0aoarthur.pokerbank.entities.RefreshToken;
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Account;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import com.j0aoarthur.pokerbank.repositories.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
@@ -56,8 +56,8 @@ public class TokenService {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateUserToken(User user) {
-        return createToken(new HashMap<>(), user.getUsername());
+    public String generateUserToken(Account account) {
+        return createToken(new HashMap<>(), account.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -73,40 +73,40 @@ public class TokenService {
         return !isTokenExpired(token);
     }
 
-    public String generateClubToken(User user, Long clubId, Role role) {
+    public String generateClubToken(Account account, Long clubId, Role role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("clubId", clubId);
         claims.put("role", role.name());
 
-        return createToken(claims, user.getUsername());
+        return createToken(claims, account.getUsername());
     }
 
-    public String generateRefreshToken(User user) {
-        return createRefreshToken(user, new HashMap<>());
+    public String generateRefreshToken(Account account) {
+        return createRefreshToken(account, new HashMap<>());
     }
 
-    public String generateClubRefreshToken(User user, Long clubId, Role role) {
+    public String generateClubRefreshToken(Account account, Long clubId, Role role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("clubId", clubId);
         claims.put("role", role.name());
-        return createRefreshToken(user, claims);
+        return createRefreshToken(account, claims);
     }
 
-    private String createRefreshToken(User user, Map<String, Object> claims) {
+    private String createRefreshToken(Account account, Map<String, Object> claims) {
         Instant expiryDate = Instant.now().plusSeconds(refreshExpirationInDays * 24 * 60 * 60);
 
         String refreshTokenString = Jwts.builder()
                 .setClaims(claims)
-                .setSubject(user.getUsername())
+                .setSubject(account.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(expiryDate))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
 
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId())
+        RefreshToken refreshToken = refreshTokenRepository.findByAccountId(account.getId())
                 .orElse(new RefreshToken());
 
-        refreshToken.setUser(user);
+        refreshToken.setAccount(account);
         refreshToken.setToken(refreshTokenString);
         refreshToken.setExpiryDate(expiryDate);
 
@@ -120,16 +120,16 @@ public class TokenService {
         return refreshTokenByToken.isPresent() && !isTokenExpired(token);
     }
 
-    public CustomUserDetails buildUserDetailsFromToken(String token, User user) {
+    public CustomUserDetails buildUserDetailsFromToken(String token, Account account) {
         Claims claims = this.extractAllClaims(token);
         Long clubId = claims.get("clubId", Long.class);
         String roleString = claims.get("role", String.class);
 
         if (clubId != null && roleString != null) {
             Role role = Role.valueOf(roleString);
-            return new CustomUserDetails(user, role);
+            return new CustomUserDetails(account, role);
         }
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(account);
     }
 
     @Transactional

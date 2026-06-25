@@ -19,8 +19,8 @@ public class RefreshToken {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(nullable = false, unique = true)
     private String token;

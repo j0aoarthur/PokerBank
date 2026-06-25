@@ -3,16 +3,16 @@ package com.j0aoarthur.pokerbank.services.impl;
 import com.j0aoarthur.pokerbank.dtos.request.AuthRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.request.NewPasswordDTO;
 import com.j0aoarthur.pokerbank.dtos.response.AuthResponse;
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Account;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.email.EmailService;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
-import com.j0aoarthur.pokerbank.repositories.UserRepository;
+import com.j0aoarthur.pokerbank.repositories.AccountRepository;
 import com.j0aoarthur.pokerbank.security.CustomUserDetails;
 import com.j0aoarthur.pokerbank.security.TokenService;
 import com.j0aoarthur.pokerbank.services.AuthService;
-import com.j0aoarthur.pokerbank.services.ClubMemberService;
+import com.j0aoarthur.pokerbank.services.MemberService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,34 +30,34 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
     private final EmailService emailService;
     private final AuthContextService authContextService;
-    private final ClubMemberService clubMemberService;
+    private final MemberService memberService;
 
     @Value("${frontend.base-url}")
     private String frontendBaseUrl;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.getUserByUsername(username);
+        Account account = this.getUserByUsername(username);
 
-        return CustomUserDetails.create(user);
+        return CustomUserDetails.create(account);
     }
 
-    private User getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
+    private Account getUserByUsername(String username) {
+        return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o username: " + username));
     }
 
     @Override
     public AuthResponse generateTokens(String username) {
-        User user = this.getUserByUsername(username);
-        String accessToken = tokenService.generateUserToken(user);
-        String refreshToken = tokenService.generateRefreshToken(user);
+        Account account = this.getUserByUsername(username);
+        String accessToken = tokenService.generateUserToken(account);
+        String refreshToken = tokenService.generateRefreshToken(account);
 
         return new AuthResponse(accessToken, refreshToken);
     }
@@ -69,7 +69,7 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
         }
 
         String username = tokenService.extractUsername(refreshToken);
-        User user = getUserByUsername(username);
+        Account account = getUserByUsername(username);
 
         Claims claims = tokenService.extractAllClaims(refreshToken);
         Long clubId = claims.get("clubId", Long.class);
@@ -80,110 +80,110 @@ public class AuthServiceImpl implements UserDetailsService, AuthService {
 
         if (clubId != null && roleStr != null) {
             Role role = Role.valueOf(roleStr);
-            newAccessToken = tokenService.generateClubToken(user, clubId, role);
-            newRefreshToken = tokenService.generateClubRefreshToken(user, clubId, role);
+            newAccessToken = tokenService.generateClubToken(account, clubId, role);
+            newRefreshToken = tokenService.generateClubRefreshToken(account, clubId, role);
         } else {
-            newAccessToken = tokenService.generateUserToken(user);
-            newRefreshToken = tokenService.generateRefreshToken(user);
+            newAccessToken = tokenService.generateUserToken(account);
+            newRefreshToken = tokenService.generateRefreshToken(account);
         }
 
         return new AuthResponse(newAccessToken, newRefreshToken);
     }
 
     @Override
-    public User createUser(AuthRequestDTO authRequestDTO) {
+    public Account createUser(AuthRequestDTO authRequestDTO) {
         var encodedPassword = passwordEncoder.encode(authRequestDTO.password());
-        User user = new User(authRequestDTO, encodedPassword);
+        Account account = new Account(authRequestDTO, encodedPassword);
 
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        if (accountRepository.findByUsername(account.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username já está em uso.");
         }
 
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        if (accountRepository.findByEmail(account.getEmail()).isPresent()) {
             throw new IllegalArgumentException("E-mail já está em uso.");
         }
 
         // Gerar token de verificação único (24 horas de validade)
-        user.generateVerificationToken();
+        account.generateVerificationToken();
 
         // Enviar e-mail de verificação (Mudar o link para o seu domínio real em produção)
-        String verificationLink = frontendBaseUrl + "/auth/verify?token=" + user.getVerificationToken();
+        String verificationLink = frontendBaseUrl + "/auth/verify?token=" + account.getVerificationToken();
         try {
-            emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), verificationLink);
+            emailService.sendVerificationEmail(account.getEmail(), account.getUsername(), verificationLink);
         } catch (Exception e) {
 //            throw new RuntimeException("Erro ao enviar e-mail de verificação: " + e.getMessage());
-            logger.error("Falha ao enviar e-mail de verificação para {}: {}", user.getEmail(), e.getMessage());
+            logger.error("Falha ao enviar e-mail de verificação para {}: {}", account.getEmail(), e.getMessage());
         }
 
-        return userRepository.save(user);
+        return accountRepository.save(account);
     }
 
     @Override
     public boolean verifyUserEmail(String token) {
-        User user = userRepository.findByVerificationToken(token)
+        Account account = accountRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new EntityNotFoundException("Token de verificação inválido"));
 
-        if (user.getVerificationTokenExpiration() < System.currentTimeMillis()) {
+        if (account.getVerificationTokenExpiration() < System.currentTimeMillis()) {
             throw new IllegalStateException("Token de verificação expirado");
         }
 
-        if (user.getIsVerified()) {
+        if (account.getIsVerified()) {
             return false;
         }
 
-        user.setIsVerified(true);
-        user.setVerificationToken(null);
-        user.setVerificationTokenExpiration(null);
-        userRepository.save(user);
+        account.setIsVerified(true);
+        account.setVerificationToken(null);
+        account.setVerificationTokenExpiration(null);
+        accountRepository.save(account);
         return true;
     }
 
     @Override
     public void requestPasswordReset(String email) {
-        User user = userRepository.findByEmail(email)
+        Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o e-mail: " + email));
 
         // Verifica se o usuário pediu esse e-mail recentemente e está pedindo de novo em menos de 5 minutos
-        if (user.getResetTokenExpiration() != null && user.getResetTokenExpiration() > System.currentTimeMillis() - 5 * 60 * 1000) {
+        if (account.getResetTokenExpiration() != null && account.getResetTokenExpiration() > System.currentTimeMillis() - 5 * 60 * 1000) {
             throw new IllegalStateException("Você já solicitou uma redefinição de senha recentemente. Espere alguns minutos antes de tentar novamente.");
         }
 
         // Gerar token de redefinição de senha (15 minutos de validade)
-        user.generateResetToken();
+        account.generateResetToken();
 
         // Enviar e-mail com o link de redefinição de senha
-        String resetLink = frontendBaseUrl + "/auth/reset-password?token=" + user.getResetToken();
+        String resetLink = frontendBaseUrl + "/auth/reset-password?token=" + account.getResetToken();
         try {
-            emailService.sendResetEmail(user.getEmail(), user.getUsername(), resetLink);
+            emailService.sendResetEmail(account.getEmail(), account.getUsername(), resetLink);
         } catch (Exception e) {
 //            throw new RuntimeException("Erro ao enviar e-mail de redefinição de senha: " + e.getMessage());
-            logger.error("Falha ao enviar e-mail de redefinição de senha para {}: {}", user.getEmail(), e.getMessage());
+            logger.error("Falha ao enviar e-mail de redefinição de senha para {}: {}", account.getEmail(), e.getMessage());
 
         }
 
-        userRepository.save(user);
+        accountRepository.save(account);
     }
 
     @Override
     public void resetPassword(NewPasswordDTO newPasswordDTO) {
-        User user = userRepository.findByResetToken(newPasswordDTO.passwordToken())
+        Account account = accountRepository.findByResetToken(newPasswordDTO.passwordToken())
                 .orElseThrow(() -> new EntityNotFoundException("Token de redefinição de senha inválido"));
 
-        if (user.getResetTokenExpiration() < System.currentTimeMillis()) {
+        if (account.getResetTokenExpiration() < System.currentTimeMillis()) {
             throw new IllegalStateException("Token de redefinição de senha expirado");
         }
 
-        user.setPassword(passwordEncoder.encode(newPasswordDTO.newPassword()));
-        user.setResetToken(null);
-        user.setResetTokenExpiration(null);
-        userRepository.save(user);
+        account.setPassword(passwordEncoder.encode(newPasswordDTO.newPassword()));
+        account.setResetToken(null);
+        account.setResetTokenExpiration(null);
+        accountRepository.save(account);
     }
 
     @Override
     public AuthResponse selectClub(Long clubId) {
-        User currentUser = authContextService.getCurrentUser();
+        Account currentUser = authContextService.getCurrentUser();
 
-        var roleOpt = clubMemberService.getMemberByUserAndClub(currentUser.getId(), clubId);
+        var roleOpt = memberService.getMemberByUserAndClub(currentUser.getId(), clubId);
 
         if (roleOpt.isEmpty()) {
             throw new IllegalArgumentException("Usuário não é membro do clube com ID: " + clubId);
