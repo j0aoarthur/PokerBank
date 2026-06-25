@@ -29,19 +29,19 @@ public class Club {
     private String description;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ClubMember> clubMembers = new ArrayList<>();
+    private List<Member> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Game> games = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PlayerRanking> playerRankings = new ArrayList<>();
+    private List<MemberStats> memberStatss = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Chip> chips = new ArrayList<>();
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<GamePlayer> gamePlayers = new ArrayList<>();
+    private List<GameParticipant> gameParticipants = new ArrayList<>();
 
     public Club(ClubRequestDTO clubRequestDTO) {
         this.setName(clubRequestDTO.name());

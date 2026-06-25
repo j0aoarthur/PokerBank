@@ -1,7 +1,7 @@
 package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
-import com.j0aoarthur.pokerbank.dtos.response.ClubMemberDTO;
+import com.j0aoarthur.pokerbank.dtos.response.MemberDTO;
 import com.j0aoarthur.pokerbank.dtos.response.ClubResponseDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.infra.context.ClubContext;
@@ -75,9 +75,9 @@ public class ClubController {
 
     @GetMapping("/members")
     @RequiresClubContext
-    public ResponseEntity<?> getClubMembers() {
+    public ResponseEntity<?> getMembers() {
         try {
-            return ResponseEntity.ok(clubService.getClubMembers().stream().map(ClubMemberDTO::new).toList());
+            return ResponseEntity.ok(clubService.getMembers().stream().map(MemberDTO::new).toList());
         } catch (Exception e) {
             return ResponseEntity.status(404).body("Clube não encontrado. " + e.getMessage());
         }
@@ -103,13 +103,13 @@ public class ClubController {
         }
     }
 
-    @DeleteMapping("/members/{clubMemberId}")
+    @DeleteMapping("/members/{memberId}")
     @RequiresClubContext
     @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
-    public ResponseEntity<?> removeMemberFromClub(@PathVariable Long clubMemberId) {
+    public ResponseEntity<?> removeMemberFromClub(@PathVariable Long memberId) {
         try {
             Long clubId = ClubContext.getCurrentClubId();
-            clubService.removeMemberFromClub(clubId, clubMemberId);
+            clubService.removeMemberFromClub(clubId, memberId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Erro ao remover membro do clube. " + e.getMessage());

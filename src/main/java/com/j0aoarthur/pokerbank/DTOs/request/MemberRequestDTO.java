@@ -5,7 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 
-public record ClubMemberRequestDTO(
+public record MemberRequestDTO(
         @NotBlank(message = "O nome do membro do clube é obrigatório.")
         String name,
 

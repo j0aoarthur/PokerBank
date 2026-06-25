@@ -1,16 +1,16 @@
 package com.j0aoarthur.pokerbank.services.impl;
 
-import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.MemberRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.request.ClubRequestDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
-import com.j0aoarthur.pokerbank.entities.ClubMember;
-import com.j0aoarthur.pokerbank.entities.User;
+import com.j0aoarthur.pokerbank.entities.Member;
+import com.j0aoarthur.pokerbank.entities.Account;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.context.ClubContext;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.ClubRepository;
-import com.j0aoarthur.pokerbank.services.ClubMemberService;
+import com.j0aoarthur.pokerbank.services.MemberService;
 import com.j0aoarthur.pokerbank.services.ClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
     private final AuthContextService authContextService;
-    private final ClubMemberService clubMemberService;
+    private final MemberService memberService;
 
 
 
@@ -40,8 +40,8 @@ public class ClubServiceImpl implements ClubService {
             ClubContext.setCurrentClubId(club.getId());
 
             // 3. Configura o dono e a associação do clube.
-            User currentUser = authContextService.getCurrentUser();
-            clubMemberService.createClubMember(new ClubMemberRequestDTO(currentUser.getName(), Role.OWNER), club);
+            Account currentUser = authContextService.getCurrentUser();
+            memberService.createMember(new MemberRequestDTO(currentUser.getName(), Role.OWNER), club);
 
             return club;
         } finally {
@@ -76,34 +76,34 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     @Transactional
-    public ClubMember joinClub(String publicCode) {
+    public Member joinClub(String publicCode) {
         Club club = clubRepository.findByPublicCode(publicCode).orElseThrow(() -> new EntityNotFoundException("Clube não encontrado com o código: " + publicCode));
 
-        User currentUser = authContextService.getCurrentUser();
+        Account currentUser = authContextService.getCurrentUser();
 
-        Optional<ClubMember> clubMember = clubMemberService.getMemberByUserAndClub(currentUser.getId(), club.getId());
-        if (clubMember.isPresent()) {
+        Optional<Member> member = memberService.getMemberByUserAndClub(currentUser.getId(), club.getId());
+        if (member.isPresent()) {
             throw new IllegalArgumentException("Usuário já é membro deste clube.");
         }
 
-        return clubMemberService.createClubMember(new ClubMemberRequestDTO(currentUser.getName(), Role.PLAYER), club);
+        return memberService.createMember(new MemberRequestDTO(currentUser.getName(), Role.PLAYER), club);
     }
 
     public List<Club> getMyClubs() {
-        User currentUser = authContextService.getCurrentUser();
-        return clubMemberService.getClubsByUserId(currentUser.getId());
+        Account currentUser = authContextService.getCurrentUser();
+        return memberService.getClubsByAccountId(currentUser.getId());
     }
 
-    public List<ClubMember> getClubMembers() {
+    public List<Member> getMembers() {
         Club currentClub = authContextService.getCurrentClub();
-        return currentClub.getClubMembers();
+        return currentClub.getMembers();
     }
 
     @Override
-    public void removeMemberFromClub(Long clubId, Long clubMemberId) {
+    public void removeMemberFromClub(Long clubId, Long memberId) {
         Club club = this.getClubById(clubId);
-        ClubMember clubMember = clubMemberService.getClubMemberById(clubMemberId);
-        club.getClubMembers().remove(clubMember);
+        Member member = memberService.getMemberById(memberId);
+        club.getMembers().remove(member);
         clubRepository.save(club);
     }
 }

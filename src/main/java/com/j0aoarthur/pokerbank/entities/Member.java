@@ -1,6 +1,6 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.MemberRequestDTO;
 import com.j0aoarthur.pokerbank.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "club_members")
+@Table(name = "members")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ClubMember extends BaseTenantEntity {
+public class Member extends BaseTenantEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", insertable = false, updatable = false)
@@ -31,8 +31,8 @@ public class ClubMember extends BaseTenantEntity {
     private Role role = Role.PLAYER;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -40,11 +40,11 @@ public class ClubMember extends BaseTenantEntity {
     @Column(name = "claim_token", unique = true)
     private UUID claimToken;
 
-    public ClubMember(ClubMemberRequestDTO clubMemberDTO, Club club, User user) {
-        this.setName(clubMemberDTO.name());
+    public Member(MemberRequestDTO memberDTO, Club club, Account account) {
+        this.setName(memberDTO.name());
         this.setClub(club);
         this.setClubId(club.getId());
-        this.setUser(user);
-        this.setRole(clubMemberDTO.role() != null ? clubMemberDTO.role() : Role.PLAYER);
+        this.setAccount(account);
+        this.setRole(memberDTO.role() != null ? memberDTO.role() : Role.PLAYER);
     }
 }

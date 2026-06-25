@@ -1,10 +1,10 @@
 package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.dtos.request.ClaimTokenRequestDTO;
-import com.j0aoarthur.pokerbank.dtos.request.ClubMemberRequestDTO;
-import com.j0aoarthur.pokerbank.dtos.response.ClubMemberDTO;
-import com.j0aoarthur.pokerbank.entities.ClubMember;
-import com.j0aoarthur.pokerbank.services.ClubMemberService;
+import com.j0aoarthur.pokerbank.dtos.request.MemberRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.response.MemberDTO;
+import com.j0aoarthur.pokerbank.entities.Member;
+import com.j0aoarthur.pokerbank.services.MemberService;
 import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,40 +18,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/club-members")
+@RequestMapping("/members")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Tag(name = "Club Member Controller", description = "Endpoints para gerenciar membros de um clube")
 @SecurityRequirement(name = "bearerAuth")
 @RequiresClubContext
 @RequiredArgsConstructor
-public class ClubMemberController {
+public class MemberController {
 
-    private final ClubMemberService clubMemberService;
+    private final MemberService memberService;
 
     @PostMapping
     @Operation(summary = "Cria um novo jogador")
-    public ResponseEntity<ClubMemberDTO> createClubMember(@RequestBody ClubMemberRequestDTO clubMemberDTO) {
-        ClubMember createdClubMember = clubMemberService.createClubMember(clubMemberDTO);
-        return ResponseEntity.ok(new ClubMemberDTO(createdClubMember));
+    public ResponseEntity<MemberDTO> createMember(@RequestBody MemberRequestDTO memberDTO) {
+        Member createdMember = memberService.createMember(memberDTO);
+        return ResponseEntity.ok(new MemberDTO(createdMember));
     }
 
     @GetMapping
     @Operation(summary = "Retorna todos os jogadores")
-    public ResponseEntity<List<ClubMember>> getAllClubMembers() {
-        return ResponseEntity.ok(clubMemberService.getAllClubMembers());
+    public ResponseEntity<List<Member>> getAllMembers() {
+        return ResponseEntity.ok(memberService.getAllMembers());
     }
 
     @GetMapping("/not-in-game/{gameId}")
     @Operation(summary = "Retorna todos os jogadores que não estão em uma partida específica")
-    public ResponseEntity<List<ClubMember>> getClubMembersNotInGame(@PathVariable Long gameId) {
-        return ResponseEntity.ok(clubMemberService.getClubMembersNotInGame(gameId));
+    public ResponseEntity<List<Member>> getMembersNotInGame(@PathVariable Long gameId) {
+        return ResponseEntity.ok(memberService.getMembersNotInGame(gameId));
     }
 
     @PostMapping("/claim")
     @Operation(summary = "Reivindica um membro do clube")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ClubMemberDTO> claimClubMember(@RequestBody @Valid ClaimTokenRequestDTO request) {
-        ClubMember claimedClubMember = clubMemberService.claimClubMember(request.claimToken());
-        return ResponseEntity.ok(new ClubMemberDTO(claimedClubMember));
+    public ResponseEntity<MemberDTO> claimMember(@RequestBody @Valid ClaimTokenRequestDTO request) {
+        Member claimedMember = memberService.claimMember(request.claimToken());
+        return ResponseEntity.ok(new MemberDTO(claimedMember));
     }
 }
