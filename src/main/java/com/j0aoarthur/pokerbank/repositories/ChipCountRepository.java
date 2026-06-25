@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ChipCountRepository extends JpaRepository<ChipCount, Long> {
-    List<ChipCount> findByGamePlayerId(Long gamePlayerId);
+    List<ChipCount> findByGameParticipantId(Long gameParticipantId);
 }
