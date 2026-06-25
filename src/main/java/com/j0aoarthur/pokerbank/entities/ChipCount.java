@@ -18,8 +18,8 @@ public class ChipCount {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "game_player_id")
-    private GamePlayer gamePlayer;
+    @JoinColumn(name = "game_participant_id")
+    private GameParticipant gameParticipant;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "chip_id")
@@ -27,8 +27,8 @@ public class ChipCount {
 
     private Integer quantity;
 
-    public ChipCount(ChipCountRequestDTO chipCountDTO, GamePlayer gamePlayer, Chip chip) {
-        this.setGamePlayer(gamePlayer);
+    public ChipCount(ChipCountRequestDTO chipCountDTO, GameParticipant gameParticipant, Chip chip) {
+        this.setGameParticipant(gameParticipant);
         this.setChip(chip);
         this.setQuantity(chipCountDTO.quantity());
     }

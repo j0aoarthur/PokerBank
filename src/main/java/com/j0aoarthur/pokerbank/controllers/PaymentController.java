@@ -2,10 +2,10 @@ package com.j0aoarthur.pokerbank.controllers;
 
 import com.j0aoarthur.pokerbank.dtos.request.PaymentDTO;
 import com.j0aoarthur.pokerbank.dtos.response.GameDTO;
-import com.j0aoarthur.pokerbank.dtos.response.GamePlayerDTO;
+import com.j0aoarthur.pokerbank.dtos.response.GameParticipantDTO;
 import com.j0aoarthur.pokerbank.dtos.response.PaymentSuggestionDTO;
 import com.j0aoarthur.pokerbank.entities.Game;
-import com.j0aoarthur.pokerbank.entities.GamePlayer;
+import com.j0aoarthur.pokerbank.entities.GameParticipant;
 import com.j0aoarthur.pokerbank.services.impl.PaymentService;
 import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,11 +42,11 @@ public class PaymentController {
         return ResponseEntity.ok(expiredGames.stream().map(GameDTO::new).toList());
     }
 
-    @GetMapping("/expired-payments/{clubMemberId}")
+    @GetMapping("/expired-payments/{memberId}")
     @Operation(summary = "Retorna todos os pagamentos expirados de um jogador específico")
-    public ResponseEntity<List<GamePlayerDTO>> getExpiredPaymentsOfPlayer(@PathVariable Long clubMemberId) {
-        List<GamePlayer> expiredPayments = paymentService.getExpiredPaymentsByClubMember(clubMemberId);
-        return ResponseEntity.ok(expiredPayments.stream().map(GamePlayerDTO::new).toList());
+    public ResponseEntity<List<GameParticipantDTO>> getExpiredPaymentsOfPlayer(@PathVariable Long memberId) {
+        List<GameParticipant> expiredPayments = paymentService.getExpiredPaymentsByMember(memberId);
+        return ResponseEntity.ok(expiredPayments.stream().map(GameParticipantDTO::new).toList());
     }
 
     @PostMapping

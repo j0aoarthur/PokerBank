@@ -1,6 +1,6 @@
 package com.j0aoarthur.pokerbank.entities;
 
-import com.j0aoarthur.pokerbank.dtos.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GameParticipantRequestDTO;
 import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "game_players")
+@Table(name = "game_participants")
 @Setter
 @NoArgsConstructor
 @Getter
-public class GamePlayer extends BaseTenantEntity {
+public class GameParticipant extends BaseTenantEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", insertable = false, updatable = false)
@@ -33,10 +33,10 @@ public class GamePlayer extends BaseTenantEntity {
     private Game game;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_member_id")
-    private ClubMember clubMember;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "gameParticipant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ChipCount> chipCounts = new ArrayList<>();
 
     private BigDecimal initialCash;
@@ -56,14 +56,14 @@ public class GamePlayer extends BaseTenantEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public GamePlayer(GamePlayerRequestDTO dto, Game game, ClubMember clubMember) {
-        this.setClub(clubMember.getClub());
+    public GameParticipant(GameParticipantRequestDTO dto, Game game, Member member) {
+        this.setClub(member.getClub());
         this.setInitialCash(dto.initialCash());
         this.setBalance(BigDecimal.ZERO);
         this.setSettledAmount(BigDecimal.ZERO);
         this.setPaid(false);
         this.setGame(game);
-        this.setClubMember(clubMember);
+        this.setMember(member);
     }
 
     /**

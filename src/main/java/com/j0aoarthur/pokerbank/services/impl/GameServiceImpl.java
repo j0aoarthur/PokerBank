@@ -4,12 +4,12 @@ import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.response.GameInfoDTO;
 import com.j0aoarthur.pokerbank.entities.Club;
 import com.j0aoarthur.pokerbank.entities.Game;
-import com.j0aoarthur.pokerbank.entities.GamePlayer;
+import com.j0aoarthur.pokerbank.entities.GameParticipant;
 import com.j0aoarthur.pokerbank.infra.context.AuthContextService;
 import com.j0aoarthur.pokerbank.infra.exceptions.EntityNotFoundException;
 import com.j0aoarthur.pokerbank.repositories.GameRepository;
 import com.j0aoarthur.pokerbank.services.GameService;
-import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+import com.j0aoarthur.pokerbank.services.MemberStatsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ import java.util.List;
 public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
-    private final PlayerRankingService playerRankingService;
+    private final MemberStatsService memberStatsService;
     private final AuthContextService authContextService;
 
     @Override
@@ -50,13 +50,13 @@ public class GameServiceImpl implements GameService {
         }
 
         // Obter todos os jogadores da partida antes de excluir a partida
-        List<GamePlayer> gamePlayers = game.getPlayers();
+        List<GameParticipant> gameParticipants = game.getPlayers();
 
         gameRepository.delete(game);
 
         // Atualizar o ranking dos jogadores da partida
-        for (GamePlayer gamePlayer : gamePlayers) {
-            playerRankingService.updatePlayerRanking(gamePlayer);
+        for (GameParticipant gameParticipant : gameParticipants) {
+            memberStatsService.updateMemberStats(gameParticipant);
         }
     }
 
@@ -88,19 +88,19 @@ public class GameServiceImpl implements GameService {
     public GameInfoDTO getGameInfoById(Long id) {
         Game game = this.getGameById(id);
 
-        List<GamePlayer> gamePlayersWithBalance = game.getPlayers();
+        List<GameParticipant> gameParticipantsWithBalance = game.getPlayers();
 
-        Integer totalPlayers = gamePlayersWithBalance.size();
+        Integer totalPlayers = gameParticipantsWithBalance.size();
 
         BigDecimal totalBalance = BigDecimal.ZERO;
-        for (GamePlayer gamePlayer : gamePlayersWithBalance) {
-            totalBalance = totalBalance.add(gamePlayer.getBalance());
+        for (GameParticipant gameParticipant : gameParticipantsWithBalance) {
+            totalBalance = totalBalance.add(gameParticipant.getBalance());
         }
         String observation;
 
         BigDecimal totalPrize = BigDecimal.ZERO;
-        for (GamePlayer gamePlayer : gamePlayersWithBalance) {
-            totalPrize = totalPrize.add(gamePlayer.getInitialCash());
+        for (GameParticipant gameParticipant : gameParticipantsWithBalance) {
+            totalPrize = totalPrize.add(gameParticipant.getInitialCash());
         }
 
         if (totalBalance.compareTo(BigDecimal.ZERO) == 0) {
@@ -128,13 +128,13 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public void checkGameFinished(Long gameId) {
         Game game = this.getGameById(gameId);
-        List<GamePlayer> gamePlayers = game.getPlayers();
+        List<GameParticipant> gameParticipants = game.getPlayers();
 
-        if (gamePlayers.isEmpty()) {
+        if (gameParticipants.isEmpty()) {
             throw new EntityNotFoundException("Nenhum jogador encontrado na partida de ID: " + gameId);
         }
 
-        boolean allPaid = gamePlayers.stream().allMatch(GamePlayer::getPaid);
+        boolean allPaid = gameParticipants.stream().allMatch(GameParticipant::getPaid);
 
         if (allPaid) {
             game.setIsFinished(true);

@@ -1,21 +1,21 @@
 package com.j0aoarthur.pokerbank.dtos.response;
 
-import com.j0aoarthur.pokerbank.entities.PlayerRanking;
+import com.j0aoarthur.pokerbank.entities.MemberStats;
 
 import java.math.BigDecimal;
 
-public record PlayerRankingDTO(
-        Long clubMemberId,
+public record MemberStatsDTO(
+        Long memberId,
         Integer rank,
-        String clubMemberName,
+        String memberName,
         int gamesPlayed,
         BigDecimal netBalance
 ) {
-    public PlayerRankingDTO(PlayerRanking pr) {
+    public MemberStatsDTO(MemberStats pr) {
         this(
-                pr.getClubMember().getId(),
+                pr.getMember().getId(),
                 pr.getRank(),
-                pr.getClubMember().getName(),
+                pr.getMember().getName(),
                 pr.getGamesPlayed(),
                 pr.getNetBalance()
         );

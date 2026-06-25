@@ -8,11 +8,11 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "player_ranking")
+@Table(name = "member_stats")
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlayerRanking extends BaseTenantEntity {
+public class MemberStats extends BaseTenantEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id", insertable = false, updatable = false)
@@ -23,8 +23,8 @@ public class PlayerRanking extends BaseTenantEntity {
     private Long id;
 
     @OneToOne(optional = false)
-    @JoinColumn(name = "club_member_id")
-    private ClubMember clubMember;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(name = "rank")
     private Integer rank;

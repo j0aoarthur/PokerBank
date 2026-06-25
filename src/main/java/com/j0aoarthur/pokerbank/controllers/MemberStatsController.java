@@ -1,8 +1,8 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.dtos.response.PlayerRankingDTO;
-import com.j0aoarthur.pokerbank.entities.PlayerRanking;
-import com.j0aoarthur.pokerbank.services.PlayerRankingService;
+import com.j0aoarthur.pokerbank.dtos.response.MemberStatsDTO;
+import com.j0aoarthur.pokerbank.entities.MemberStats;
+import com.j0aoarthur.pokerbank.services.MemberStatsService;
 import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,23 +23,23 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 @RequiresClubContext
 @RequiredArgsConstructor
-public class PlayerRankingController {
+public class MemberStatsController {
 
-    private final PlayerRankingService playerRankingService;
+    private final MemberStatsService memberStatsService;
 
     @GetMapping
     @Operation(summary = "Retorna o ranking completo dos jogadores")
-    public ResponseEntity<List<PlayerRankingDTO>> getRanking() {
-        List<PlayerRanking> ranking = playerRankingService.getPlayerRankings();
+    public ResponseEntity<List<MemberStatsDTO>> getRanking() {
+        List<MemberStats> ranking = memberStatsService.getMemberStatss();
 
-        return ResponseEntity.ok(ranking.stream().map(PlayerRankingDTO::new).toList());
+        return ResponseEntity.ok(ranking.stream().map(MemberStatsDTO::new).toList());
     }
 
     @GetMapping("/top")
     @Operation(summary = "Retorna os 3 melhores jogadores do ranking")
-    public ResponseEntity<List<PlayerRankingDTO>> getTopPlayers() {
-        List<PlayerRanking> topPlayers = playerRankingService.getTopPlayers();
-        return ResponseEntity.ok(topPlayers.stream().map(PlayerRankingDTO::new).toList());
+    public ResponseEntity<List<MemberStatsDTO>> getTopPlayers() {
+        List<MemberStats> topPlayers = memberStatsService.getTopPlayers();
+        return ResponseEntity.ok(topPlayers.stream().map(MemberStatsDTO::new).toList());
     }
 
 

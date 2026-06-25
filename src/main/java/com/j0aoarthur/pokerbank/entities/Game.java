@@ -32,7 +32,7 @@ public class Game extends BaseTenantEntity {
     private LocalDate dueDate;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<GamePlayer> players = new ArrayList<>();
+    private List<GameParticipant> players = new ArrayList<>();
 
     public Game(GameRequestDTO gameRequestDTO, Club currentClub) {
         this.setDate(gameRequestDTO.date());

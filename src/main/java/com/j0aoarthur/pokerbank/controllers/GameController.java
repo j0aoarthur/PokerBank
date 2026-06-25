@@ -1,13 +1,13 @@
 package com.j0aoarthur.pokerbank.controllers;
 
-import com.j0aoarthur.pokerbank.dtos.request.GamePlayerRequestDTO;
+import com.j0aoarthur.pokerbank.dtos.request.GameParticipantRequestDTO;
 import com.j0aoarthur.pokerbank.dtos.request.GameRequestDTO;
-import com.j0aoarthur.pokerbank.dtos.request.UpdateGamePlayerDTO;
+import com.j0aoarthur.pokerbank.dtos.request.UpdateGameParticipantDTO;
 import com.j0aoarthur.pokerbank.dtos.response.*;
 import com.j0aoarthur.pokerbank.entities.ChipCount;
 import com.j0aoarthur.pokerbank.entities.Game;
-import com.j0aoarthur.pokerbank.entities.GamePlayer;
-import com.j0aoarthur.pokerbank.services.GamePlayerService;
+import com.j0aoarthur.pokerbank.entities.GameParticipant;
+import com.j0aoarthur.pokerbank.services.GameParticipantService;
 import com.j0aoarthur.pokerbank.services.GameService;
 import com.j0aoarthur.pokerbank.tenancy.annotations.RequiresClubContext;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +35,7 @@ import java.util.List;
 public class GameController {
 
     private final GameService gameService;
-    private final GamePlayerService gamePlayerService;
+    private final GameParticipantService gameParticipantService;
 
     @PostMapping
     @Operation(summary = "Cria uma nova partida")
@@ -75,33 +75,33 @@ public class GameController {
 
     @PostMapping("/add-player")
     @Operation(summary = "Adiciona um jogador a uma partida")
-    public ResponseEntity<GamePlayer> addPlayerToGame(@RequestBody @Valid GamePlayerRequestDTO dto) {
-        GamePlayer gamePlayer = gamePlayerService.addPlayerToGame(dto);
-        return ResponseEntity.ok(gamePlayer);
+    public ResponseEntity<GameParticipant> addPlayerToGame(@RequestBody @Valid GameParticipantRequestDTO dto) {
+        GameParticipant gameParticipant = gameParticipantService.addPlayerToGame(dto);
+        return ResponseEntity.ok(gameParticipant);
     }
 
-    @PutMapping("/{gameId}/players/{clubMemberId}")
+    @PutMapping("/{gameId}/players/{memberId}")
     @Operation(summary = "Atualiza as informações de um jogador em uma partida")
-    public ResponseEntity<GamePlayer> updateGamePlayer(@PathVariable Long gameId, @PathVariable Long clubMemberId, @RequestBody @Valid UpdateGamePlayerDTO dto) {
-        GamePlayer updatedGamePlayer = gamePlayerService.updateGamePlayer(gameId, clubMemberId, dto);
-        return ResponseEntity.ok(updatedGamePlayer);
+    public ResponseEntity<GameParticipant> updateGameParticipant(@PathVariable Long gameId, @PathVariable Long memberId, @RequestBody @Valid UpdateGameParticipantDTO dto) {
+        GameParticipant updatedGameParticipant = gameParticipantService.updateGameParticipant(gameId, memberId, dto);
+        return ResponseEntity.ok(updatedGameParticipant);
     }
 
     @GetMapping("/{gameId}/players")
     @Operation(summary = "Retorna todos os jogadores de uma partida específica")
-    public ResponseEntity<List<GamePlayerBalanceDTO>> getGamePlayersByGame(@PathVariable Long gameId) {
-        List<GamePlayer> balances = gamePlayerService.getGamePlayersByGame(gameId);
-        return ResponseEntity.ok(balances.stream().map(GamePlayerBalanceDTO::new).toList());
+    public ResponseEntity<List<GameParticipantBalanceDTO>> getGameParticipantsByGame(@PathVariable Long gameId) {
+        List<GameParticipant> balances = gameParticipantService.getGameParticipantsByGame(gameId);
+        return ResponseEntity.ok(balances.stream().map(GameParticipantBalanceDTO::new).toList());
     }
 
-    @GetMapping("/{gameId}/players/{clubMemberId}")
+    @GetMapping("/{gameId}/players/{memberId}")
     @Operation(summary = "Retorna as informações de um jogador específico em uma partida")
-    public ResponseEntity<GamePlayerInfoDTO> getGamePlayerByGameAndMember(@PathVariable Long gameId, @PathVariable Long clubMemberId) {
-        GamePlayer gamePlayer = gamePlayerService.getGamePlayerByGameAndMember(gameId, clubMemberId);
-        List<ChipCount> chipCounts = gamePlayer.getChipCounts();
+    public ResponseEntity<GameParticipantInfoDTO> getGameParticipantByGameAndMember(@PathVariable Long gameId, @PathVariable Long memberId) {
+        GameParticipant gameParticipant = gameParticipantService.getGameParticipantByGameAndMember(gameId, memberId);
+        List<ChipCount> chipCounts = gameParticipant.getChipCounts();
 
-        GamePlayerInfoDTO gamePlayerInfo = new GamePlayerInfoDTO(gamePlayer, chipCounts.stream().map(ChipCountDTO::new).toList());
-        return ResponseEntity.ok(gamePlayerInfo);
+        GameParticipantInfoDTO gameParticipantInfo = new GameParticipantInfoDTO(gameParticipant, chipCounts.stream().map(ChipCountDTO::new).toList());
+        return ResponseEntity.ok(gameParticipantInfo);
     }
 
 
