@@ -87,7 +87,7 @@ public class MemberServiceTest {
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> memberService.claimMember(invalidClaimToken));
 
-        assertTrue(exception.getMessage().contains("Jogador não encontrado com o claim token: " + invalidClaimToken));
+        assertTrue(exception.getMessage().contains("Membro não encontrado com o claim token: " + invalidClaimToken));
         verify(memberRepository, times(1)).updateUserByClaimToken(invalidClaimToken, mockUser);
     }
 
@@ -101,7 +101,7 @@ public class MemberServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> memberService.claimMember(validClaimToken));
 
-        assertTrue(exception.getMessage().contains("O usuário já é um jogador deste clube."));
+        assertTrue(exception.getMessage().contains("O usuário já é um membro deste clube."));
 
         verify(memberRepository, times(1)).findByClaimToken(validClaimToken);
         verify(memberRepository, times(1)).findByAccountIdAndClubId(mockUser.getId(), mockClub.getId());

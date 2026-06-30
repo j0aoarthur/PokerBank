@@ -94,7 +94,7 @@ public class ClubServiceTest {
         Club savedClub = clubCaptor.getValue();
         MemberRequestDTO savedMemberDto = memberDtoCaptor.getValue();
 
-        // O jogador foi criado com os dados corretos?
+        // O membro foi criado com os dados corretos?
         assertThat(memberClubCaptor.getValue()).isEqualTo(savedClub);
         assertThat(savedMemberDto.role()).isEqualTo(Role.OWNER);
         assertThat(savedMemberDto.name()).isEqualTo(mockedUser.getName());
