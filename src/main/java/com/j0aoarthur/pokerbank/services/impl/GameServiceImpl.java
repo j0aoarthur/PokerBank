@@ -49,12 +49,12 @@ public class GameServiceImpl implements GameService {
             throw new AccessDeniedException("Você não tem permissão para excluir esta partida.");
         }
 
-        // Obter todos os jogadores da partida antes de excluir a partida
-        List<GameParticipant> gameParticipants = game.getPlayers();
+        // Obter todos os participantes da partida antes de excluír a partida
+        List<GameParticipant> gameParticipants = game.getParticipants();
 
         gameRepository.delete(game);
 
-        // Atualizar o ranking dos jogadores da partida
+        // Atualizar as estatísticas dos participantes da partida
         for (GameParticipant gameParticipant : gameParticipants) {
             memberStatsService.updateMemberStats(gameParticipant);
         }
@@ -88,9 +88,9 @@ public class GameServiceImpl implements GameService {
     public GameInfoDTO getGameInfoById(Long id) {
         Game game = this.getGameById(id);
 
-        List<GameParticipant> gameParticipantsWithBalance = game.getPlayers();
+        List<GameParticipant> gameParticipantsWithBalance = game.getParticipants();
 
-        Integer totalPlayers = gameParticipantsWithBalance.size();
+        Integer totalParticipants = gameParticipantsWithBalance.size();
 
         BigDecimal totalBalance = BigDecimal.ZERO;
         for (GameParticipant gameParticipant : gameParticipantsWithBalance) {
@@ -118,7 +118,7 @@ public class GameServiceImpl implements GameService {
                 game.getDueDate(),
                 totalBalance,
                 totalPrize,
-                totalPlayers,
+                totalParticipants,
                 game.getIsFinished(),
                 observation
         );
@@ -128,10 +128,10 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public void checkGameFinished(Long gameId) {
         Game game = this.getGameById(gameId);
-        List<GameParticipant> gameParticipants = game.getPlayers();
+        List<GameParticipant> gameParticipants = game.getParticipants();
 
         if (gameParticipants.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum jogador encontrado na partida de ID: " + gameId);
+            throw new EntityNotFoundException("Nenhum participante encontrado na partida de ID: " + gameId);
         }
 
         boolean allPaid = gameParticipants.stream().allMatch(GameParticipant::getPaid);

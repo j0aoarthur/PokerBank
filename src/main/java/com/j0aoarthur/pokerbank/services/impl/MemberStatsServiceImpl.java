@@ -25,30 +25,30 @@ public class MemberStatsServiceImpl implements MemberStatsService {
     public void updateMemberStats(GameParticipant gameParticipant) {
         Optional<MemberStats> memberStats = memberStatsRepository.findByMemberId(gameParticipant.getMember().getId());
         if (memberStats.isPresent()) {
-            this.calculateAndSaveRanking(memberStats.get(), gameParticipant);
+            this.calculateAndSaveStats(memberStats.get(), gameParticipant);
         } else {
             MemberStats newMemberStats = new MemberStats();
             newMemberStats.setMember(gameParticipant.getMember());
             newMemberStats.setClub(gameParticipant.getMember().getClub());
-            this.calculateAndSaveRanking(newMemberStats, gameParticipant);
+            this.calculateAndSaveStats(newMemberStats, gameParticipant);
         }
 
         if (!gameParticipant.getMember().getClub().equals(authContextService.getCurrentClub())) {
-            throw new IllegalArgumentException("O jogador não pertence ao clube selecionado.");
+            throw new IllegalArgumentException("O membro não pertence ao clube selecionado.");
         }
     }
 
     @Override
-    public List<MemberStats> getMemberStatss() {
+    public List<MemberStats> getAllMemberStats() {
         return memberStatsRepository.findAllByGamesPlayedAfterOrderByNetBalanceDesc(1);
     }
 
     @Override
-    public List<MemberStats> getTopPlayers() {
-        return this.getMemberStatss().stream().limit(3).toList();
+    public List<MemberStats> getTopMembers() {
+        return this.getAllMemberStats().stream().limit(3).toList();
     }
 
-    private void calculateAndSaveRanking(MemberStats memberStats, GameParticipant gameParticipant) {
+    private void calculateAndSaveStats(MemberStats memberStats, GameParticipant gameParticipant) {
         memberStats.setGamesPlayed(memberStats.getGamesPlayed() + 1);
 
         BigDecimal balance = gameParticipant.getBalance();
@@ -62,14 +62,14 @@ public class MemberStatsServiceImpl implements MemberStatsService {
 
         memberStatsRepository.save(memberStats);
 
-        updateRankingPositions();
+        updateStatsPositions();
     }
 
-    private void updateRankingPositions() {
-        List<MemberStats> rankings = this.getMemberStatss();
-        for (int i = 0; i < rankings.size(); i++) {
-            rankings.get(i).setRank(i + 1);
-            memberStatsRepository.save(rankings.get(i));
+    private void updateStatsPositions() {
+        List<MemberStats> allStats = this.getAllMemberStats();
+        for (int i = 0; i < allStats.size(); i++) {
+            allStats.get(i).setRank(i + 1);
+            memberStatsRepository.save(allStats.get(i));
         }
     }
 }

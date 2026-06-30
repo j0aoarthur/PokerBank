@@ -9,7 +9,7 @@ import com.j0aoarthur.pokerbank.entities.enums.PaymentSituation;
 import java.util.List;
 
 public interface GameParticipantService {
-    GameParticipant addPlayerToGame(GameParticipantRequestDTO gameParticipant);
+    GameParticipant addParticipantToGame(GameParticipantRequestDTO gameParticipant);
     GameParticipant getGameParticipantByGameAndMember(Long gameId, Long memberId);
     List<GameParticipant> getGameParticipantsByGame(Long gameId);
     List<GameParticipant> getGameParticipantsByMember(Long memberId);

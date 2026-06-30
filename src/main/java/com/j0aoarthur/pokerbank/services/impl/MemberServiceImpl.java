@@ -34,10 +34,10 @@ public class MemberServiceImpl implements MemberService {
 
         Account currentUser = authContextService.getCurrentUser();
 
-        Optional<Member> existingPlayer = memberRepository.findByAccountId(currentUser.getId());
+        Optional<Member> existingMember = memberRepository.findByAccountId(currentUser.getId());
 
-        if (existingPlayer.isPresent()) {
-            throw new IllegalArgumentException("O usuário já é um jogador deste clube.");
+        if (existingMember.isPresent()) {
+            throw new IllegalArgumentException("O usuário já é um membro deste clube.");
         }
 
         Member member = new Member(memberDTO, club, currentUser);
@@ -54,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMemberById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Jogador não encontrado com o ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Membro não encontrado com o ID: " + id));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
         List<Member> allMembers = memberRepository.findAll().stream()
                 .sorted(Comparator.comparing(Member::getName)).toList();
         if (allMembers.isEmpty()) {
-            throw new EntityNotFoundException("Nenhum jogador encontrado.");
+            throw new EntityNotFoundException("Nenhum membro encontrado.");
         }
         return allMembers;
     }
@@ -81,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
     public Member getMemberByAccountId(Long accountId) {
         return memberRepository.findByAccountId(accountId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Jogador não encontrado para o usuário com ID: " + accountId));
+                        () -> new EntityNotFoundException("Membro não encontrado para o usuário com ID: " + accountId));
     }
 
     @Override
@@ -102,16 +102,16 @@ public class MemberServiceImpl implements MemberService {
         Integer updatedRows = memberRepository.updateUserByClaimToken(claimToken, currentUser);
 
         if (updatedRows == 0) {
-            throw new EntityNotFoundException("Jogador não encontrado com o claim token: " + claimToken);
+            throw new EntityNotFoundException("Membro não encontrado com o claim token: " + claimToken);
         }
 
         if (updatedRows > 1) {
-            throw new IllegalStateException("Mais de um jogador encontrado com o claim token: " + claimToken);
+            throw new IllegalStateException("Mais de um membro encontrado com o claim token: " + claimToken);
         }
 
         List<Member> userMemberships = memberRepository.findAllByAccountId(currentUser.getId());
         if (userMemberships.isEmpty()) {
-            throw new EntityNotFoundException("Jogador não encontrado para o usuário.");
+            throw new EntityNotFoundException("Membro não encontrado para o usuário.");
         }
 
         return userMemberships.get(userMemberships.size() - 1);

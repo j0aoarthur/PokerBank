@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MemberStatsService {
     void updateMemberStats(GameParticipant gameParticipant);
-    List<MemberStats> getMemberStatss();
-    List<MemberStats> getTopPlayers();
+    List<MemberStats> getAllMemberStats();
+    List<MemberStats> getTopMembers();
 }

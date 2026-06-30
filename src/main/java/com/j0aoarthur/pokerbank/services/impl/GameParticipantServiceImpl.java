@@ -29,13 +29,13 @@ public class GameParticipantServiceImpl implements GameParticipantService {
 
     @Override
     @Transactional
-    public GameParticipant addPlayerToGame(GameParticipantRequestDTO dto) {
+    public GameParticipant addParticipantToGame(GameParticipantRequestDTO dto) {
         Game game = gameService.getGameById(dto.gameId());
         Member member = memberService.getMemberById(dto.memberId());
 
-        // Verifica se o jogador já está na partida
+        // Verifica se o participante já está na partida
         if (gameParticipantRepository.existsByGameIdAndMemberId(game.getId(), member.getId())) {
-            throw new IllegalArgumentException("Jogador já está na partida");
+            throw new IllegalArgumentException("Participante já está na partida");
         }
 
         // Criar relação GameParticipant
@@ -51,7 +51,7 @@ public class GameParticipantServiceImpl implements GameParticipantService {
     public GameParticipant getGameParticipantByGameAndMember(Long gameId, Long memberId) {
         return gameParticipantRepository.findByGameIdAndMemberId(gameId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "O jogador com ID: " + memberId + " não está na partida com ID: " + gameId));
+                        "O participante com ID: " + memberId + " não está na partida com ID: " + gameId));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class GameParticipantServiceImpl implements GameParticipantService {
     public List<GameParticipant> getGameParticipantsByMember(Long memberId) {
         List<GameParticipant> games = gameParticipantRepository.findByMemberId(memberId);
         if (games.isEmpty()) {
-            throw new EntityNotFoundException("Jogador não possui partidas jogadas");
+            throw new EntityNotFoundException("Membro não possui partidas jogadas");
         }
 
         return games;
