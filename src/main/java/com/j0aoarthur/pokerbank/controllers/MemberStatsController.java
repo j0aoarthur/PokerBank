@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/ranking")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@Tag(name = "Member Stats Controller", description = "Endpoints para gerenciar as estatísticas dos membros")
+@Tag(name = "Ranking", description = "Estatísticas e ranking dos jogadores do clube ativo")
 @SecurityRequirement(name = "bearerAuth")
 @RequiresClubContext
 @RequiredArgsConstructor
@@ -28,15 +28,14 @@ public class MemberStatsController {
     private final MemberStatsService memberStatsService;
 
     @GetMapping
-    @Operation(summary = "Retorna as estatísticas completas dos membros")
+    @Operation(summary = "Lista estatísticas completas de todos os membros", description = "Ordenado por saldo líquido decrescente.")
     public ResponseEntity<List<MemberStatsDTO>> getAllMemberStats() {
         List<MemberStats> stats = memberStatsService.getAllMemberStats();
-
         return ResponseEntity.ok(stats.stream().map(MemberStatsDTO::new).toList());
     }
 
     @GetMapping("/top")
-    @Operation(summary = "Retorna os 3 melhores membros")
+    @Operation(summary = "Lista o top 3 do ranking", description = "Retorna os 3 membros com maior saldo líquido acumulado.")
     public ResponseEntity<List<MemberStatsDTO>> getTopMembers() {
         List<MemberStats> topMembers = memberStatsService.getTopMembers();
         return ResponseEntity.ok(topMembers.stream().map(MemberStatsDTO::new).toList());
