@@ -43,15 +43,15 @@ public class PaymentController {
     }
 
     @GetMapping("/expired-payments/{memberId}")
-    @Operation(summary = "Retorna todos os pagamentos expirados de um jogador específico")
-    public ResponseEntity<List<GameParticipantDTO>> getExpiredPaymentsOfPlayer(@PathVariable Long memberId) {
+    @Operation(summary = "Retorna todos os pagamentos expirados de um participante específico")
+    public ResponseEntity<List<GameParticipantDTO>> getExpiredPaymentsOfMember(@PathVariable Long memberId) {
         List<GameParticipant> expiredPayments = paymentService.getExpiredPaymentsByMember(memberId);
         return ResponseEntity.ok(expiredPayments.stream().map(GameParticipantDTO::new).toList());
     }
 
     @PostMapping
-    @Operation(summary = "Registra o pagamento de um jogador")
-    public ResponseEntity<Void> payPlayer(@RequestBody PaymentDTO paymentDTO) {
+    @Operation(summary = "Registra o pagamento de um participante")
+    public ResponseEntity<Void> payParticipant(@RequestBody PaymentDTO paymentDTO) {
         paymentService.payPlayer(paymentDTO);
         return ResponseEntity.ok().build();
     }

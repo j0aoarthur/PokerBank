@@ -29,20 +29,20 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    @Operation(summary = "Cria um novo jogador")
+    @Operation(summary = "Cria um novo membro")
     public ResponseEntity<MemberDTO> createMember(@RequestBody MemberRequestDTO memberDTO) {
         Member createdMember = memberService.createMember(memberDTO);
         return ResponseEntity.ok(new MemberDTO(createdMember));
     }
 
     @GetMapping
-    @Operation(summary = "Retorna todos os jogadores")
+    @Operation(summary = "Retorna todos os membros")
     public ResponseEntity<List<Member>> getAllMembers() {
         return ResponseEntity.ok(memberService.getAllMembers());
     }
 
     @GetMapping("/not-in-game/{gameId}")
-    @Operation(summary = "Retorna todos os jogadores que não estão em uma partida específica")
+    @Operation(summary = "Retorna todos os membros que não estão em uma partida específica")
     public ResponseEntity<List<Member>> getMembersNotInGame(@PathVariable Long gameId) {
         return ResponseEntity.ok(memberService.getMembersNotInGame(gameId));
     }

@@ -27,7 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
-@Tag(name = "Game Controller", description = "Endpoints para gerenciar partidas e jogadores em partidas")
+@Tag(name = "Game Controller", description = "Endpoints para gerenciar partidas e participantes em partidas")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @SecurityRequirement(name = "bearerAuth")
 @RequiresClubContext
@@ -73,29 +73,29 @@ public class GameController {
         return ResponseEntity.ok(latestGames.stream().map(GameDTO::new).toList());
     }
 
-    @PostMapping("/add-player")
-    @Operation(summary = "Adiciona um jogador a uma partida")
-    public ResponseEntity<GameParticipant> addPlayerToGame(@RequestBody @Valid GameParticipantRequestDTO dto) {
-        GameParticipant gameParticipant = gameParticipantService.addPlayerToGame(dto);
+    @PostMapping("/add-participant")
+    @Operation(summary = "Adiciona um participante a uma partida")
+    public ResponseEntity<GameParticipant> addParticipantToGame(@RequestBody @Valid GameParticipantRequestDTO dto) {
+        GameParticipant gameParticipant = gameParticipantService.addParticipantToGame(dto);
         return ResponseEntity.ok(gameParticipant);
     }
 
-    @PutMapping("/{gameId}/players/{memberId}")
-    @Operation(summary = "Atualiza as informações de um jogador em uma partida")
+    @PutMapping("/{gameId}/participants/{memberId}")
+    @Operation(summary = "Atualiza as informações de um participante em uma partida")
     public ResponseEntity<GameParticipant> updateGameParticipant(@PathVariable Long gameId, @PathVariable Long memberId, @RequestBody @Valid UpdateGameParticipantDTO dto) {
         GameParticipant updatedGameParticipant = gameParticipantService.updateGameParticipant(gameId, memberId, dto);
         return ResponseEntity.ok(updatedGameParticipant);
     }
 
-    @GetMapping("/{gameId}/players")
-    @Operation(summary = "Retorna todos os jogadores de uma partida específica")
+    @GetMapping("/{gameId}/participants")
+    @Operation(summary = "Retorna todos os participantes de uma partida específica")
     public ResponseEntity<List<GameParticipantBalanceDTO>> getGameParticipantsByGame(@PathVariable Long gameId) {
         List<GameParticipant> balances = gameParticipantService.getGameParticipantsByGame(gameId);
         return ResponseEntity.ok(balances.stream().map(GameParticipantBalanceDTO::new).toList());
     }
 
-    @GetMapping("/{gameId}/players/{memberId}")
-    @Operation(summary = "Retorna as informações de um jogador específico em uma partida")
+    @GetMapping("/{gameId}/participants/{memberId}")
+    @Operation(summary = "Retorna as informações de um participante específico em uma partida")
     public ResponseEntity<GameParticipantInfoDTO> getGameParticipantByGameAndMember(@PathVariable Long gameId, @PathVariable Long memberId) {
         GameParticipant gameParticipant = gameParticipantService.getGameParticipantByGameAndMember(gameId, memberId);
         List<ChipCount> chipCounts = gameParticipant.getChipCounts();
