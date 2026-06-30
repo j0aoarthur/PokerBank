@@ -9,7 +9,7 @@ public record GameInfoDTO(
         LocalDate dueDate,
         BigDecimal totalBalance,
         BigDecimal totalPrize,
-        Integer totalPlayers,
+        Integer totalParticipants,
         Boolean isFinished,
         String observation
 ) {}
